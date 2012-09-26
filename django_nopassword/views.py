@@ -24,6 +24,7 @@ def login_with_code (request, username, login_code):
         raise Http404
 
     next = request.GET.get('next')
+    user = auth_login(request, user)
 
     return redirect(next)
 

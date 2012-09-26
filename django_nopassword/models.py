@@ -19,6 +19,7 @@ class LoginCode (models.Model):
         try:
             timestamp = datetime.now() + TIMEOUT
             login_code = cls.objects.get(user=user, code=code, timestamp__gt=timestamp)
+            return user
         except (TypeError, cls.DoesNotExist):
-            return False
+            return None
 

@@ -6,6 +6,7 @@ class EmailBackend:
     def authenticate(self, username, password=None):
         try:
             user = User.objects.get(username=username)
-            return LoginCode.check(user, password)
+            user = LoginCode.check(user, password)
+            return user
         except (TypeError, User.DoesNotExist):
-            return False
+            return None

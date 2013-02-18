@@ -10,11 +10,13 @@ Run this command to install django-nopassword
 ## Usage
 Add the app to installed apps
 
-    INSTALLED_APPS = (
-        ...
-        'django_nopassword',
-        ...
-    )
+```python
+INSTALLED_APPS = (
+    ...
+    'django_nopassword',
+    ...
+)
+```
 
 Set the authentication backend to *EmailBackend*
 
@@ -22,10 +24,10 @@ Set the authentication backend to *EmailBackend*
 
 Add urls to your *urls.py*
 
-    urlpatterns = patterns('',
-        ...
-        url(r'^accounts/login/$', 'django_nopassword.views.login'), 
-        url(r'^accounts/login-code/(?P<username>[a-zA-Z0-9_@\.-]+)/(?P<login_code>[a-zA-Z0-9]+)/$', 'django_nopassword.views.login_with_code'),
-        url(r'^accounts/logout/$', 'django_nopassword.views.logout'), 
-        ...
-    )
+```python
+urlpatterns = patterns('',
+    ...
+    url(r'^accounts/', include('django_nopassword.urls')),
+    ...
+)
+```

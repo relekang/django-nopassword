@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-from random import choice
 import string
+from random import choice
+from datetime import datetime
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db import models
-from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-class LoginCode (models.Model):
+
+class LoginCode(models.Model):
     user = models.ForeignKey(User, related_name='login_codes', editable=False, verbose_name=_('user'))
     code = models.CharField(max_length=2, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)
     next = models.TextField(editable=False, blank=True)
 
-    def __unicode__ (self):
+    def __unicode__(self):
         return "%s - %s" % (self.user, self.timestamp)
 
     def save(self, *args, **kwargs):
@@ -33,7 +34,6 @@ class LoginCode (models.Model):
             getattr(settings, 'SERVER_EMAIL', 'root@example.com'),
             [self.user.email],
         )
-
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

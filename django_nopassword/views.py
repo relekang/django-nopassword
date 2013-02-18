@@ -6,7 +6,8 @@ from django.shortcuts import redirect, render
 from django_nopassword.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 
-def login (request):
+
+def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -14,7 +15,8 @@ def login (request):
 
     return django_login(request, authentication_form=AuthenticationForm)
 
-def login_with_code (request, username, login_code):
+
+def login_with_code(request, username, login_code):
     user = authenticate(username=username, code=login_code)
 
     if user is None:

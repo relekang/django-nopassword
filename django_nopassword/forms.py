@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from django_nopassword.models import LoginCode
 
+
 class AuthenticationForm(forms.Form):
     """
     Base class for authenticating users. Extend this to get a form that accepts

@@ -6,6 +6,7 @@ from django_nopassword.models import LoginCode
 #Todo: move to settings
 TIMEOUT = timedelta(minutes=15)
 
+
 class EmailBackend:
     
     def authenticate(self, username, code=None):

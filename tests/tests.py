@@ -2,6 +2,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.utils import unittest
+
 from django_nopassword.models import LoginCode
 
 
@@ -11,7 +12,7 @@ class TestLoginCodes(unittest.TestCase):
 
     def test_login_backend(self):
         self.code = LoginCode.create_code_for_user(self.user)
-        self.assertIsNotNone(self.code.pk)
+        self.assertEqual(len(self.code.code), 20)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
         self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
 

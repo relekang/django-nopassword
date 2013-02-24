@@ -2,6 +2,7 @@
 import string
 from random import choice
 from datetime import datetime
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -12,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class LoginCode(models.Model):
     user = models.ForeignKey(User, related_name='login_codes', editable=False, verbose_name=_('user'))
-    code = models.CharField(max_length=2, editable=False, verbose_name=_('code'))
+    code = models.CharField(max_length=20, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)
     next = models.TextField(editable=False, blank=True)
 

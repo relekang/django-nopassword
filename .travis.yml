@@ -5,12 +5,12 @@ python:
   - "2.7"
 
 env:
-  - DJANGO_VERSION=1.4
-  - DJANGO_VERSION=1.5
+  - DJANGO=django==1.4
+  - DJANGO=https://www.djangoproject.com/download/1.5c2/tarball/
 
 install:
   - pip install psycopg2
-  - pip install Django==$DJANGO_VERSION
+  - pip install $DJANGO
 
 script: python setup.py test
 

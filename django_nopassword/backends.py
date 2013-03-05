@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
-from django.contrib.auth.models import User
+
+from django_nopassword.utils import User
 from django_nopassword.models import LoginCode
 
 #Todo: move to settings

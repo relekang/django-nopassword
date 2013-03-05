@@ -3,10 +3,12 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'django_nopassword',
     }
 }
+
+AUTH_USER_MODEL = 'tests.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.auth',

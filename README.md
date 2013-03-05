@@ -6,7 +6,7 @@
 ## Installation
 Run this command to install django-nopassword
 
-    pip install git+git://github.com/relekang/django-nopassword.git#egg=django-nopassword
+    pip install django-nopassword
 
 ## Usage
 Add the app to installed apps

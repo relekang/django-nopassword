@@ -18,7 +18,7 @@ class AuthenticationForm(forms.Form):
         'no_cookies': _("Your Web browser doesn't appear to have cookies "
                         "enabled. Cookies are required for logging in."),
         'inactive': _("This account is inactive."),
-        }
+    }
 
     def __init__(self, request=None, *args, **kwargs):
         """

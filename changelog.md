@@ -1,6 +1,10 @@
 ## Changelog
+### 0.2
+* Support for custom user in Django 1.5
+* Add `LOGIN_CODE_TIMEOUT` setting
+
 ### 0.1.2
-* Fiks typo in LoginCode.max_length
+* Fix typo in LoginCode.max_length
 
 ### 0.1.1
 * Add tests

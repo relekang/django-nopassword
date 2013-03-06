@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+
 DEBUG = False
 
 DATABASES = {
@@ -9,6 +10,8 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'tests.CustomUser'
+
+LOGIN_CODE_TIMEOUT = 900
 
 INSTALLED_APPS = [
     'django.contrib.auth',

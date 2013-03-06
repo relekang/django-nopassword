@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+from django.conf import settings
 
 from django_nopassword.utils import User
 from django_nopassword.models import LoginCode
-
-#Todo: move to settings
-TIMEOUT = timedelta(minutes=15)
 
 
 class EmailBackend:
@@ -16,7 +14,7 @@ class EmailBackend:
             if code is None:
                 return LoginCode.create_code_for_user(user)
             else:
-                timestamp = datetime.now() + TIMEOUT
+                timestamp = datetime.now() + timedelta(getattr(settings, 'LOGIN_CODE_TIMEOUT', 900))
                 login_code = LoginCode.objects.get(user=user, code=code, timestamp__lt=timestamp)
                 user = login_code.user
                 user.code = login_code

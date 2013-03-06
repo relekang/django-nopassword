@@ -8,6 +8,11 @@ Run this command to install django-nopassword
 
     pip install django-nopassword
 
+### Requirements
+Django >= 1.4 (1.5 is supported)
+
+South is not required but it is supported.
+
 ## Usage
 Add the app to installed apps
 
@@ -38,3 +43,10 @@ urlpatterns = patterns('',
 ##### LOGIN_CODE_TIMEOUT
 default: `900` (15 minutes)
 Defines how long a login code is valid in seconds.
+
+### Django settings used by django-nopassword
+##### SERVER_URL
+default: `example.com`
+
+##### SERVER_EMAIL
+default: `root@example.com`

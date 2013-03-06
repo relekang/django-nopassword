@@ -2,6 +2,7 @@
 ### 0.2
 * Support for custom user in Django 1.5
 * Add `LOGIN_CODE_TIMEOUT` setting
+* Add south support
 
 ### 0.1.2
 * Fix typo in LoginCode.max_length

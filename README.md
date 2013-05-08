@@ -1,6 +1,7 @@
 # django-nopassword
 [![Build Status](https://travis-ci.org/relekang/django-nopassword.png)](https://travis-ci.org/relekang/django-nopassword)
-
+[![PyPi version](https://pypip.in/v/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)
+[![PyPi downloads](https://pypip.in/d/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)  
 **Disclaimer:** I am writing this to learn more about custom authentication in django. Inspired by [Is it time for password-less login?](http://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login) by [Ben Brown](http://twitter.com/benbrown)
 
 ## Installation

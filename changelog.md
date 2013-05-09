@@ -1,4 +1,8 @@
 ## Changelog
+### 0.3
+* Support inactive users
+* Set `supports_inactive_user` to avoid warnings on 1.4
+
 ### 0.2
 * Support for custom user in Django 1.5
 * Add `LOGIN_CODE_TIMEOUT` setting

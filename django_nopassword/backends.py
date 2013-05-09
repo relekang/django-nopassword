@@ -11,6 +11,9 @@ class EmailBackend:
     def authenticate(self, username, code=None):
         try:
             user = User.objects.get(username=username)
+            if not user.is_active:
+                return None
+            
             if code is None:
                 return LoginCode.create_code_for_user(user)
             else:

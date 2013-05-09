@@ -38,6 +38,9 @@ class LoginCode(models.Model):
 
     @classmethod
     def create_code_for_user(cls, user, next=None):
+        if not user.is_active:
+            return None
+
         code = cls.generate_code()
         login_code = LoginCode(user=user, code=code)
         if not next is None:

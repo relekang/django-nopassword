@@ -7,13 +7,15 @@ from django_nopassword.models import LoginCode
 
 
 class EmailBackend:
+
+    supports_inactive_user = True
     
     def authenticate(self, username, code=None):
         try:
             user = User.objects.get(username=username)
             if not user.is_active:
                 return None
-            
+
             if code is None:
                 return LoginCode.create_code_for_user(user)
             else:

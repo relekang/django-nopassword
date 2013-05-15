@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from django_nopassword.models import LoginCode
@@ -19,6 +20,18 @@ class AuthenticationForm(forms.Form):
                         "enabled. Cookies are required for logging in."),
         'inactive': _("This account is inactive."),
     }
+
+    class Media:
+        if getattr(settings, 'NOPASSWORD_AUTOCOMPLETE', False):
+            js = (
+                'http://code.jquery.com/jquery-1.9.1.min.js',
+                '/static/js/hogan.js',
+                '/static/js/typeahead.js',
+                '/static/js/login.js',
+            )
+            css = {
+                'all': ('/static/css/login.css', )
+            }
 
     def __init__(self, request=None, *args, **kwargs):
         """

@@ -43,6 +43,10 @@ urlpatterns = patterns('',
 default: `900` (15 minutes)  
 Defines how long a login code is valid in seconds.
 
+##### NOPASSWORD_AUTOCOMPLETE
+default: `False`
+Activates autocomplete in login form
+
 ### Django settings used by django-nopassword
 ##### SERVER_URL
 default: `example.com`

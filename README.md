@@ -41,7 +41,7 @@ urlpatterns = patterns('',
 
 ## Settings
 
-##### LOGIN_CODE_TIMEOUT
+##### NOPASSWORD_LOGIN_CODE_TIMEOUT
 default: `900` (15 minutes)  
 Defines how long a login code is valid in seconds.
 

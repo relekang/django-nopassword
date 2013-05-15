@@ -22,7 +22,7 @@ class TestLoginCodes(unittest.TestCase):
 
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
 
-    @override_settings(LOGIN_CODE_TIMEOUT=1)
+    @override_settings(NOPASSWORD_LOGIN_CODE_TIMEOUT=1)
     def test_code_timeout(self):
         self.timeout_code = LoginCode.create_code_for_user(self.user)
         time.sleep(3)

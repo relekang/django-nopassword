@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from django.conf import settings
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
@@ -43,6 +44,9 @@ def logout(request, redirect_to=None):
 
 
 def users_json(request):
+    if not getattr(settings, 'NOPASSWORD_AUTOCOMPLETE', False):
+        raise Http404
+
     users = []
     for user in User.objects.filter(is_active=True):
         users.append({
@@ -51,4 +55,4 @@ def users_json(request):
             'full_name': user.get_full_name(),
         })
 
-    return HttpResponse(json.dumps(users))
+    return HttpResponse(json.dumps(users), mimetype="application/json")

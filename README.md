@@ -12,8 +12,6 @@ Run this command to install django-nopassword
 ### Requirements
 Django >= 1.4 (1.5 custom user is supported)
 
-South is not required but it is supported.
-
 ## Usage
 Add the app to installed apps
 

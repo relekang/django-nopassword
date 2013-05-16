@@ -45,7 +45,7 @@ Defines how long a login code is valid in seconds.
 
 ##### NOPASSWORD_AUTOCOMPLETE
 default: `False`
-Activates autocomplete in login form
+Activates autocomplete in login form. Be aware of the potensial security risk and privacy risk by publicly viewing all usernames and full names. Only do this if you are certain your users would not mind.
 
 ### Django settings used by django-nopassword
 ##### SERVER_URL

@@ -1,4 +1,15 @@
 ## Changelog
+### 0.3.3
+* Fix redirect bug in logout view.
+* Add "http://" to link sent in token mail.
+* Add NOPASSWORD prefix to all django-nopassword settings
+
+### 0.3.2
+* Remove migrations
+
+### 0.3.1
+* Remove long description with bad markup
+
 ### 0.3
 * Support inactive users
 * Set `supports_inactive_user` to avoid warnings on 1.4

@@ -27,7 +27,7 @@ class LoginCode(models.Model):
         super(LoginCode, self).save(*args, **kwargs)
         send_mail(
             'Login code',
-            'Login with this url %s%s?next=%s' % (
+            'Login with this url http://%s%s?next=%s' % (
                 getattr(settings, 'SERVER_URL', 'example.com'),
                 reverse('django_nopassword.views.login_with_code', args=[self.user.username, self.code]),
                 self.next

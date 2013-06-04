@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django_nopassword.forms import AuthenticationForm
+from django_nopassword.utils import USERNAME_FIELD
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django_nopassword.models import LoginCode
 
@@ -19,7 +20,7 @@ def login(request):
 
 def login_with_code(request, username, login_code):
     code = get_object_or_404(LoginCode, code=login_code)
-    user = authenticate(username=username, code=login_code)
+    user = authenticate(**{USERNAME_FIELD: username, 'code': login_code})
 
     if user is None:
         raise Http404

@@ -20,7 +20,15 @@ class TestLoginCodes(unittest.TestCase):
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
         self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
 
+        authenticate(username=self.user.username)
+        self.assertEqual(LoginCode.objects.filter(user=self.user).count(), 1)
+
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
+        self.assertIsNone(authenticate(username=self.inactive_user.username))
+
+    def test_next_value(self):
+        self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
+        self.assertEqual(self.code.next, '/secrets/')
 
     @override_settings(NOPASSWORD_LOGIN_CODE_TIMEOUT=1)
     def test_code_timeout(self):

@@ -51,3 +51,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'tests.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+try:
+    from django_nopassword.tests.local import *
+except ImportError, e:
+    print e

@@ -2,8 +2,10 @@
 import time
 
 from django.contrib.auth import authenticate
+from django.test import Client
 from django.test.utils import override_settings
 from django.utils import unittest
+from django_nopassword import views
 
 from django_nopassword.models import LoginCode
 from django_nopassword.utils import User
@@ -39,3 +41,29 @@ class TestLoginCodes(unittest.TestCase):
     def tearDown(self):
         self.user.delete()
         self.inactive_user.delete()
+
+
+class TestViews(unittest.TestCase):
+
+    def setUp(self):
+        self.c = Client()
+        self.user = User.objects.create(username='user')
+
+    def test_login(self):
+        response = self.c.get('/accounts/login/')
+        self.assertEqual(response.status_code, 200)
+
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
+        self.assertEqual(login.status_code, 200)
+
+        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username, 'wrongcode'))
+        self.assertEqual(login_with_code.status_code, 404)
+
+        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username, LoginCode.objects.all()[0].code))
+        self.assertEqual(login_with_code.status_code, 302)
+
+        logout = self.c.get('/accounts/logout/')
+        self.assertEqual(logout.status_code, 302)
+
+    def tearDown(self):
+        self.user.delete()

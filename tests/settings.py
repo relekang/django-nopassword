@@ -4,7 +4,7 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'django_nopassword',
     }
 }
@@ -51,8 +51,3 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'tests.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
-try:
-    from django_nopassword.tests.local import *
-except ImportError, e:
-    print e

@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<form method="post" class="form-vertical">
+    {% csrf_token %}
+    {{ form.media }}
+    <div class="control-group row-fluid">
+        <input id="id_username" maxlength="30" name="username" type="text" style="text-align: center;" class="span12">
+    </div>
+    <div class="controls">
+        <button type="submit" class="btn">{% trans "Login" %}</button>
+    </div>
+</form>

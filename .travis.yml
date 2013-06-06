@@ -11,8 +11,15 @@ env:
 install:
   - pip install psycopg2
   - pip install django==$DJANGO_VERSION
+  - pip install coverage coveralls
 
-script: python setup.py test
+script:
+script:
+  - coverage run --source=django_nopassword setup.py test
+  - coverage report
+
 
 before_script:
   - psql -c 'create database django_nopassword;' -U postgres
+
+after_success: coveralls

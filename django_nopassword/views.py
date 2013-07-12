@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
+import json
+from django.conf import settings
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from django_nopassword.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.http import HttpResponse
+
+from django_nopassword.forms import AuthenticationForm
 from django_nopassword.models import LoginCode
+from django_nopassword.utils import User
 
 
 def login(request):
@@ -36,3 +41,18 @@ def logout(request, redirect_to=None):
 
     else:
         return redirect(redirect_to)
+
+
+def users_json(request):
+    if not getattr(settings, 'NOPASSWORD_AUTOCOMPLETE', False):
+        raise Http404
+
+    users = []
+    for user in User.objects.filter(is_active=True):
+        users.append({
+            'value': user.username,
+            'username': user.username,
+            'full_name': user.get_full_name(),
+        })
+
+    return HttpResponse(json.dumps(users), mimetype="application/json")

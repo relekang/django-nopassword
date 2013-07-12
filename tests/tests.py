@@ -3,6 +3,8 @@ import time
 
 from django.contrib.auth import authenticate
 from django.test import Client
+from django.http import Http404
+from django.test import RequestFactory
 from django.test.utils import override_settings
 from django.utils import unittest
 from django_nopassword import views
@@ -67,3 +69,23 @@ class TestViews(unittest.TestCase):
 
     def tearDown(self):
         self.user.delete()
+
+
+class TestUsersJsonView(unittest.TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_404(self):
+        request = self.factory.get('/accounts/users.json')
+        try:
+            response = views.users_json(request)
+            self.assertEqual(response.status_code, 404)
+        except Http404:
+            pass
+
+    @override_settings(NOPASSWORD_AUTOCOMPLETE=True)
+    def test_200(self):
+        request = self.factory.get('/accounts/users.json')
+        response = views.users_json(request)
+        self.assertEqual(response.status_code, 200)

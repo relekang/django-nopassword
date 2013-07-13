@@ -9,10 +9,10 @@ from django_nopassword.models import LoginCode
 class EmailBackend:
 
     supports_inactive_user = True
-    
-    def authenticate(self, username, code=None):
+
+    def authenticate(self, code=None, **credentials):
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(**credentials)
             if not user.is_active:
                 return None
 

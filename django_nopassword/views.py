@@ -9,6 +9,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.http import HttpResponse
 
 from django_nopassword.forms import AuthenticationForm
+from django_nopassword.utils import USERNAME_FIELD
 from django_nopassword.models import LoginCode
 from django_nopassword.utils import User
 
@@ -30,7 +31,7 @@ def login_with_code(request, login_code):
 
 def login_with_code_and_username(request, username, login_code):
     code = get_object_or_404(LoginCode, code=login_code)
-    user = authenticate(username=username, code=login_code)
+    user = authenticate(**{USERNAME_FIELD: username, 'code': login_code})
 
     if user is None:
         raise Http404

@@ -8,7 +8,8 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from django_nopassword.utils import User
+
+from django_nopassword.utils import User, get_username
 
 
 class LoginCode(models.Model):
@@ -33,10 +34,11 @@ class LoginCode(models.Model):
         )
 
     def login_url(self):
+        username = get_username(self.user)
         if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
             view = reverse('django_nopassword.views.login_with_code', args=[self.code]),
         else:
-            view = reverse('django_nopassword.views.login_with_code_and_username', args=[self.user.username, self.code]),
+            view = reverse('django_nopassword.views.login_with_code_and_username', args=[username, self.code]),
 
         return 'http://%s%s?next=%s' % (
             getattr(settings, 'SERVER_URL', 'example.com'),

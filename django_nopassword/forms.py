@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from django_nopassword.models import LoginCode
+from django_nopassword.utils import USERNAME_FIELD
 
 
 class AuthenticationForm(forms.Form):
@@ -43,12 +44,13 @@ class AuthenticationForm(forms.Form):
         self.request = request
         self.user_cache = None
         super(AuthenticationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = _(USERNAME_FIELD.capitalize())
 
     def clean(self):
         username = self.cleaned_data.get('username')
 
         if username:
-            self.user_cache = authenticate(username=username)
+            self.user_cache = authenticate(**{USERNAME_FIELD: username})
             if self.user_cache is None:
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'])

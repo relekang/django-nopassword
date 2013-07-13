@@ -11,3 +11,7 @@ class CustomUser(AbstractUser):
     new_username_field = models.CharField(unique=True, max_length=20)
 
     USERNAME_FIELD = 'new_username_field'
+
+    def save(self, *args, **kwargs):
+        self.new_username_field = self.username
+        super(CustomUser, self).save(*args, **kwargs)

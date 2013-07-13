@@ -4,10 +4,15 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_nopassword',
     }
 }
+
+try:
+    from local import *
+except ImportError:
+    pass
 
 AUTH_USER_MODEL = 'tests.CustomUser'
 

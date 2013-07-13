@@ -1,4 +1,9 @@
 ## Changelog
+### 0.4
+* Autocomplete of usernames in login form (optional)
+* Support hiding of usernames in urls
+* Support User.USERNAME_FIELD in Django 1.5. Thanks to smajda
+
 ### 0.3.3
 * Fix redirect bug in logout view.
 * Add "http://" to link sent in token mail.

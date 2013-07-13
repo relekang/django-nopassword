@@ -46,6 +46,10 @@ Defines how long a login code is valid in seconds.
 default: `False`
 Activates autocomplete in login form. Be aware of the potensial security risk and privacy risk by publicly viewing all usernames and full names. Only do this if you are certain your users would not mind.
 
+##### NOPASSWORD_HIDE_USERNAME
+default: `False`
+If set to True, the login url will not contain
+
 ### Django settings used by django-nopassword
 ##### SERVER_URL
 default: `example.com`

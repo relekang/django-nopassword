@@ -67,6 +67,23 @@ class TestViews(unittest.TestCase):
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)
 
+    @override_settings(NOPASSWORD_HIDE_USERNAME=True)
+    def test_hide_username(self):
+        response = self.c.get('/accounts/login/')
+        self.assertEqual(response.status_code, 200)
+
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
+        self.assertEqual(login.status_code, 200)
+
+        login_with_code = self.c.get('/accounts/login-code/%s/' % 'wrongcode')
+        self.assertEqual(login_with_code.status_code, 404)
+
+        login_with_code = self.c.get('/accounts/login-code/%s/' % LoginCode.objects.all()[0].code)
+        self.assertEqual(login_with_code.status_code, 302)
+
+        logout = self.c.get('/accounts/logout/')
+        self.assertEqual(logout.status_code, 302)
+
     def tearDown(self):
         self.user.delete()
 

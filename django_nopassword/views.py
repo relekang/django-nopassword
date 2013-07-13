@@ -22,7 +22,13 @@ def login(request):
     return django_login(request, authentication_form=AuthenticationForm)
 
 
-def login_with_code(request, username, login_code):
+def login_with_code(request, login_code):
+    code = get_object_or_404(LoginCode, code=login_code)
+    user = get_object_or_404(User, pk=code.user_id)
+    return login_with_code_and_username(request, username=user.username, login_code=login_code)
+
+
+def login_with_code_and_username(request, username, login_code):
     code = get_object_or_404(LoginCode, code=login_code)
     user = authenticate(username=username, code=login_code)
 

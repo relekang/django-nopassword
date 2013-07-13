@@ -27,13 +27,21 @@ class LoginCode(models.Model):
         super(LoginCode, self).save(*args, **kwargs)
         send_mail(
             'Login code',
-            'Login with this url http://%s%s?next=%s' % (
-                getattr(settings, 'SERVER_URL', 'example.com'),
-                reverse('django_nopassword.views.login_with_code', args=[self.user.username, self.code]),
-                self.next
-            ),
+            'Login with this url %s' % self.login_url(),
             getattr(settings, 'SERVER_EMAIL', 'root@example.com'),
             [self.user.email],
+        )
+
+    def login_url(self):
+        if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
+            view = reverse('django_nopassword.views.login_with_code', args=[self.code]),
+        else:
+            view = reverse('django_nopassword.views.login_with_code_and_username', args=[self.user.username, self.code]),
+
+        return 'http://%s%s?next=%s' % (
+            getattr(settings, 'SERVER_URL', 'example.com'),
+            view,
+            self.next
         )
 
     @classmethod

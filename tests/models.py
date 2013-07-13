@@ -8,3 +8,6 @@ except ImportError:
 
 class CustomUser(AbstractUser):
     extra_field = models.CharField(max_length=2)
+    new_username_field = models.CharField(unique=True, max_length=20)
+
+    USERNAME_FIELD = 'new_username_field'

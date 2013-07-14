@@ -18,6 +18,9 @@ def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
+            code = LoginCode.objects.filter(user__username=request.POST.get('username'))[0]
+            code.next = request.GET.get('next')
+            code.save()
             return render(request, 'registration/sent_mail.html')
 
     return django_login(request, authentication_form=AuthenticationForm)
@@ -32,12 +35,9 @@ def login_with_code(request, login_code):
 def login_with_code_and_username(request, username, login_code):
     code = get_object_or_404(LoginCode, code=login_code)
     user = authenticate(**{USERNAME_FIELD: username, 'code': login_code})
-
     if user is None:
         raise Http404
-
     user = auth_login(request, user)
-
     return redirect(code.next)
 
 

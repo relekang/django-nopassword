@@ -26,6 +26,7 @@ class LoginCode(models.Model):
         if not self.next:
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)
+        print self.login_url()
         send_mail(
             'Login code',
             'Login with this url %s' % self.login_url(),
@@ -42,7 +43,7 @@ class LoginCode(models.Model):
 
         return 'http://%s%s?next=%s' % (
             getattr(settings, 'SERVER_URL', 'example.com'),
-            view,
+            view[0],
             self.next
         )
 

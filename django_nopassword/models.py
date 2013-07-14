@@ -26,7 +26,6 @@ class LoginCode(models.Model):
         if not self.next:
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)
-        print self.login_url()
         send_mail(
             'Login code',
             'Login with this url %s' % self.login_url(),

@@ -1,0 +1,3 @@
+include setup.py README.md MANIFEST.in
+recursive-include django_nopassword/templates *
+recursive-include django_nopassword/static *

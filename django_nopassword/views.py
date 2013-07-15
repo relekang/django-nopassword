@@ -9,7 +9,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.http import HttpResponse
 
 from django_nopassword.forms import AuthenticationForm
-from django_nopassword.utils import USERNAME_FIELD
+from django_nopassword.utils import USERNAME_FIELD, get_username
 from django_nopassword.models import LoginCode
 from django_nopassword.utils import User
 
@@ -18,17 +18,19 @@ def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            code = LoginCode.objects.filter(user__username=request.POST.get('username'))[0]
+            code = LoginCode.objects.filter(**{'user__%s' % USERNAME_FIELD: request.POST.get('username')})[0]
             code.next = request.GET.get('next')
             code.save()
             return render(request, 'registration/sent_mail.html')
+
+        print form._errors
 
     return django_login(request, authentication_form=AuthenticationForm)
 
 
 def login_with_code(request, login_code):
     code = get_object_or_404(LoginCode.objects.select_related('user'), code=login_code)
-    return login_with_code_and_username(request, username=code.user.username, login_code=login_code)
+    return login_with_code_and_username(request, username=get_username(code.user), login_code=login_code)
 
 
 def login_with_code_and_username(request, username, login_code):

@@ -4,8 +4,9 @@ from random import choice
 from datetime import datetime
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
@@ -26,12 +27,7 @@ class LoginCode(models.Model):
         if not self.next:
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)
-        send_mail(
-            'Login code',
-            'Login with this url %s' % self.login_url(),
-            getattr(settings, 'SERVER_EMAIL', 'root@example.com'),
-            [self.user.email],
-        )
+        self.send_login_email()
 
     def login_url(self):
         username = get_username(self.user)
@@ -45,6 +41,19 @@ class LoginCode(models.Model):
             view[0],
             self.next
         )
+
+    def send_login_email(self):
+        subject = 'Login code'
+        to_email = [self.user.email]
+        from_email = getattr(settings, 'SERVER_EMAIL', 'root@example.com'),
+
+        context = {'url': self.login_url(), 'code': self}
+        text_content = render_to_string('registration/login_email.txt', context)
+        html_content = render_to_string('registration/login_email.html', context)
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

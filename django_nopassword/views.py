@@ -21,9 +21,8 @@ def login(request):
             code = LoginCode.objects.filter(**{'user__%s' % USERNAME_FIELD: request.POST.get('username')})[0]
             code.next = request.GET.get('next')
             code.save()
+            code.send_login_email()
             return render(request, 'registration/sent_mail.html')
-
-        print form._errors
 
     return django_login(request, authentication_form=AuthenticationForm)
 

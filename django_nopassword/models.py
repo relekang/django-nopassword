@@ -27,7 +27,6 @@ class LoginCode(models.Model):
         if not self.next:
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)
-        self.send_login_email()
 
     def login_url(self):
         username = get_username(self.user)

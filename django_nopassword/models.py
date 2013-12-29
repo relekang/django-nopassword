@@ -42,7 +42,7 @@ class LoginCode(models.Model):
         )
 
     def send_login_email(self):
-        subject = 'Login code'
+        subject = getattr(settings, 'LOGIN_EMAIL_SUBJECT', 'Login code')
         to_email = [self.user.email]
         from_email = getattr(settings, 'SERVER_EMAIL', 'root@example.com')
 

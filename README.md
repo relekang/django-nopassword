@@ -51,7 +51,7 @@ default: `False`
 If set to True, the login url will not contain
 
 ##### LOGIN_EMAIL_SUBJECT
-default: 'Login code'
+default: `Login code`
 Sets Email Subject for Login Emails
 
 ### Django settings used by django-nopassword

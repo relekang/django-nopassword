@@ -50,6 +50,11 @@ Activates autocomplete in login form. Be aware of the potensial security risk an
 default: `False`
 If set to True, the login url will not contain
 
+##### LOGIN_EMAIL_SUBJECT
+default: `Login code`
+
+Sets Email Subject for Login Emails
+
 ### Django settings used by django-nopassword
 ##### SERVER_URL
 default: `example.com`

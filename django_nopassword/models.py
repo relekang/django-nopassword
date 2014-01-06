@@ -44,7 +44,7 @@ class LoginCode(models.Model):
     def send_login_email(self):
         subject = getattr(settings, 'NOPASSWORD_LOGIN_EMAIL_SUBJECT', 'Login code')
         to_email = [self.user.email]
-        from_email = getattr(settings, 'SERVER_EMAIL', 'root@example.com')
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'root@example.com')
 
         context = {'url': self.login_url(), 'code': self}
         text_content = render_to_string('registration/login_email.txt', context)

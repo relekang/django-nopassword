@@ -1,1 +1,1 @@
-Login with this url {{ url }}.
+{% load i18n %}{% trans "Login with this url " %}{{ url }}.

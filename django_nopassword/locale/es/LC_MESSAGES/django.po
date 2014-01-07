@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Alejandro Varas <a.varas@tucarga.cl>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-06 09:05-0300\n"
+"PO-Revision-Date: 2014-01-06 09:07-0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forms.py:15
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: forms.py:18
+msgid ""
+"Please enter a correct username and password. Note that both fields are case-"
+"sensitive."
+msgstr ""
+"Por favor, introduce un nombre de usuario y clave correctos. Observa que "
+"ambos campos pueden ser sensibles a mayúsculas"
+
+#: forms.py:20
+msgid ""
+"Your Web browser doesn't appear to have cookies enabled. Cookies are "
+"required for logging in."
+msgstr ""
+"Su navegador no parece tener las cookies habilitadas. Las cookies se "
+"necesitan para poder ingresar"
+
+#: forms.py:22
+msgid "This account is inactive."
+msgstr "Esta cuenta está inactiva."
+
+#: models.py:17
+msgid "user"
+msgstr "usuario"
+
+#: models.py:18
+msgid "code"
+msgstr "código"
+
+#: models.py:45
+msgid "Login code"
+msgstr "Código de inicio de sesión"
+
+#: templates/registration/login.html:10
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: templates/registration/login_email.html:1
+#: templates/registration/login_email.txt:1
+msgid "Login with this url "
+msgstr "Iniciar sesión con esta url"
+
+#: templates/registration/sent_mail.html:1
+msgid "We sent you a mail with a login link"
+msgstr "Le enviamos un correo electronico con un link para iniciar sesión"

@@ -1,5 +1,7 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 import time
+
+import mock
 
 from django.contrib.auth import authenticate
 from django.test import Client
@@ -11,6 +13,8 @@ from django_nopassword import views
 
 from django_nopassword.models import LoginCode
 from django_nopassword.utils import User
+
+from .models import NoUsernameUser
 
 
 class TestLoginCodes(unittest.TestCase):
@@ -43,6 +47,19 @@ class TestLoginCodes(unittest.TestCase):
     def tearDown(self):
         self.user.delete()
         self.inactive_user.delete()
+
+
+class AuthenticationBackendTests(unittest.TestCase):
+
+    def test_authenticate_with_custom_user_model(self):
+        """When a custom user model is used that doesn't have a field
+        called "username" return `None`
+        """
+
+        with mock.patch('django_nopassword.backends.User', new=NoUsernameUser):
+            result = authenticate(username='username')
+
+            self.assertIsNone(result)
 
 
 class TestViews(unittest.TestCase):

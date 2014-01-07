@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.core.exceptions import FieldError
 
 from django_nopassword.utils import User
 from django_nopassword.models import LoginCode
@@ -25,7 +26,7 @@ class EmailBackend:
                 user.code = login_code
                 login_code.delete()
                 return user
-        except (TypeError, User.DoesNotExist, LoginCode.DoesNotExist):
+        except (TypeError, User.DoesNotExist, LoginCode.DoesNotExist, FieldError):
             return None
 
     def get_user(self, user_id):

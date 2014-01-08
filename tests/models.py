@@ -15,3 +15,10 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         self.new_username_field = self.username
         super(CustomUser, self).save(*args, **kwargs)
+
+
+class NoUsernameUser(models.Model):
+    """User model without a "username" field for authentication
+    backend testing
+    """
+    pass

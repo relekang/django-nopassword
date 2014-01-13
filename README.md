@@ -50,7 +50,7 @@ Activates autocomplete in login form. Be aware of the potensial security risk an
 default: `False`
 If set to True, the login url will not contain
 
-##### LOGIN_EMAIL_SUBJECT
+##### NOPASSWORD_LOGIN_EMAIL_SUBJECT
 default: `Login code`
 
 Sets Email Subject for Login Emails
@@ -59,5 +59,5 @@ Sets Email Subject for Login Emails
 ##### SERVER_URL
 default: `example.com`
 
-##### SERVER_EMAIL
+##### DEFAULT_FROM_EMAIL
 default: `root@example.com`

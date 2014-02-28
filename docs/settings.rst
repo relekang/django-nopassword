@@ -1,8 +1,8 @@
 Settings
-========
+--------
 
 django-nopassword settings
---------------------------
+++++++++++++++++++++++++++
 
 .. currentmodule:: django.conf.settings
 
@@ -23,7 +23,7 @@ django-nopassword settings
     Sets Email Subject for Login Emails.
 
 Django settings used in django-nopassword
------------------------------------------
++++++++++++++++++++++++++++++++++++++++++
 
 .. attribute:: SERVER_URL
 

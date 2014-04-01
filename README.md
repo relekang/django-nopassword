@@ -1,6 +1,6 @@
 # django-nopassword
 [![Build Status](https://travis-ci.org/relekang/django-nopassword.png)](https://travis-ci.org/relekang/django-nopassword)
-[![PyPi version](https://pypip.in/v/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)  
+[![PyPi version](https://pypip.in/v/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)
 **Disclaimer:** I am writing this to learn more about custom authentication in django. Inspired by [Is it time for password-less login?](http://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login) by [Ben Brown](http://twitter.com/benbrown)
 
 ## Installation
@@ -36,10 +36,14 @@ urlpatterns = patterns('',
 )
 ```
 
+## Tests
+Run with `python setup.py test`.
+To run with sqlite add `USE_SQLITE = True` in tests/local.py
+
 ## Settings
 
 ##### NOPASSWORD_LOGIN_CODE_TIMEOUT
-default: `900` (15 minutes)  
+default: `900` (15 minutes)
 Defines how long a login code is valid in seconds.
 
 ##### NOPASSWORD_AUTOCOMPLETE

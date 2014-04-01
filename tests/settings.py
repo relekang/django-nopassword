@@ -1,18 +1,29 @@
 # -*- coding: utf8 -*-
 
 DEBUG = False
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_nopassword',
-    }
-}
+USE_SQLITE = False
 
 try:
     from local import *
 except ImportError:
     pass
+
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'django_nopassword',
+        }
+    }
+
 
 AUTH_USER_MODEL = 'tests.CustomUser'
 

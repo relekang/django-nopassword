@@ -16,7 +16,6 @@ install:
   - pip install coverage coveralls
 
 script:
-script:
   - coverage run --source=django_nopassword setup.py test
   - coverage report
 

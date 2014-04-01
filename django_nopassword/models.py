@@ -69,5 +69,5 @@ class LoginCode(models.Model):
 
     @classmethod
     def generate_code(cls, length=20):
-        chars = string.letters + string.digits
+        chars = string.ascii_letters + string.digits
         return ''.join([choice(chars) for i in xrange(length)])

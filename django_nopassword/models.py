@@ -10,11 +10,11 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from django_nopassword.utils import get_username, AUTH_USER_MODULE
+from django_nopassword.utils import get_username, AUTH_USER_MODEL
 
 
 class LoginCode(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODULE, related_name='login_codes',
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name='login_codes',
                              editable=False, verbose_name=_('user'))
     code = models.CharField(max_length=20, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)

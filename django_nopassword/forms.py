@@ -3,6 +3,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
+
 from django_nopassword.models import LoginCode
 from django_nopassword.utils import USERNAME_FIELD
 
@@ -10,12 +11,12 @@ from django_nopassword.utils import USERNAME_FIELD
 class AuthenticationForm(forms.Form):
     """
     Base class for authenticating users. Extend this to get a form that accepts
-    username/password logins.
+    username logins.
     """
     username = forms.CharField(label=_("Username"), max_length=30)
 
     error_messages = {
-        'invalid_login': _("Please enter a correct username and password. "
+        'invalid_login': _("Please enter a correct username. "
                            "Note that both fields are case-sensitive."),
         'no_cookies': _("Your Web browser doesn't appear to have cookies "
                         "enabled. Cookies are required for logging in."),
@@ -54,7 +55,8 @@ class AuthenticationForm(forms.Form):
             if self.user_cache is None:
                 raise forms.ValidationError(
                     self.error_messages['invalid_login'])
-            elif not isinstance(self.user_cache, LoginCode) and not self.user_cache.is_active:
+            elif not isinstance(self.user_cache, LoginCode) and \
+                    not self.user_cache.is_active:
                 raise forms.ValidationError(self.error_messages['inactive'])
         self.check_for_test_cookie()
         return self.cleaned_data

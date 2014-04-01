@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
 
-import mock
-
 from django.contrib.auth import authenticate
 from django.test import Client
 from django.http import Http404
@@ -51,15 +49,14 @@ class TestLoginCodes(unittest.TestCase):
 
 class AuthenticationBackendTests(unittest.TestCase):
 
+    @override_settings(AUTH_USER_MODULE=NoUsernameUser)
     def test_authenticate_with_custom_user_model(self):
         """When a custom user model is used that doesn't have a field
         called "username" return `None`
         """
 
-        with mock.patch('django_nopassword.backends.User', new=NoUsernameUser):
-            result = authenticate(username='username')
-
-            self.assertIsNone(result)
+        result = authenticate(username='username')
+        self.assertIsNone(result)
 
 
 class TestViews(unittest.TestCase):

@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.exceptions import FieldError
 
-from django_nopassword.utils import User
-from django_nopassword.models import LoginCode
+from .utils import get_user_model
+from .models import LoginCode
 
 
 class EmailBackend:
@@ -13,7 +13,7 @@ class EmailBackend:
 
     def authenticate(self, code=None, **credentials):
         try:
-            user = User.objects.get(**credentials)
+            user = get_user_model().objects.get(**credentials)
             if not user.is_active:
                 return None
 
@@ -26,11 +26,11 @@ class EmailBackend:
                 user.code = login_code
                 login_code.delete()
                 return user
-        except (TypeError, User.DoesNotExist, LoginCode.DoesNotExist, FieldError):
+        except (TypeError, get_user_model().DoesNotExist, LoginCode.DoesNotExist, FieldError):
             return None
 
     def get_user(self, user_id):
         try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+            return get_user_model().objects.get(pk=user_id)
+        except get_user_model().DoesNotExist:
             return None

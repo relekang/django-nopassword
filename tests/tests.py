@@ -10,15 +10,15 @@ from django.utils import unittest
 from django_nopassword import views
 
 from django_nopassword.models import LoginCode
-from django_nopassword.utils import User
+from django_nopassword.utils import get_user_model
 
 from .models import NoUsernameUser
 
 
 class TestLoginCodes(unittest.TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='test_user')
-        self.inactive_user = User.objects.create(username='inactive', is_active=False)
+        self.user = get_user_model().objects.create(username='test_user')
+        self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)
 
     def test_login_backend(self):
         self.code = LoginCode.create_code_for_user(self.user)
@@ -63,7 +63,7 @@ class TestViews(unittest.TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = User.objects.create(username='user')
+        self.user = get_user_model().objects.create(username='user')
 
     def test_login(self):
         response = self.c.get('/accounts/login/')

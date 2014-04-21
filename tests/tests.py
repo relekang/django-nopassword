@@ -72,10 +72,14 @@ class TestViews(unittest.TestCase):
         login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
         self.assertEqual(login.status_code, 200)
 
-        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username, 'wrongcode'))
+        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username,
+                                                                      'wrongcode'))
         self.assertEqual(login_with_code.status_code, 404)
 
-        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username, LoginCode.objects.all()[0].code))
+        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (
+            self.user.username,
+            LoginCode.objects.all()[0].code)
+        )
         self.assertEqual(login_with_code.status_code, 302)
 
         logout = self.c.get('/accounts/logout/')

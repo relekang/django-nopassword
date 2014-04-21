@@ -20,7 +20,8 @@ class EmailBackend:
             if code is None:
                 return LoginCode.create_code_for_user(user)
             else:
-                timestamp = datetime.now() - timedelta(seconds=getattr(settings, 'NOPASSWORD_LOGIN_CODE_TIMEOUT', 900))
+                timeout = getattr(settings, 'NOPASSWORD_LOGIN_CODE_TIMEOUT', 900)
+                timestamp = datetime.now() - timedelta(seconds=timeout)
                 login_code = LoginCode.objects.get(user=user, code=code, timestamp__gt=timestamp)
                 user = login_code.user
                 user.code = login_code

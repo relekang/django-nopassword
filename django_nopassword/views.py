@@ -16,7 +16,9 @@ def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            code = LoginCode.objects.filter(**{'user__%s' % get_username_field(): request.POST.get('username')})[0]
+            code = LoginCode.objects.filter(**{
+                'user__%s' % get_username_field(): request.POST.get('username')
+            })[0]
             code.next = request.GET.get('next')
             code.save()
             code.send_login_email()
@@ -27,7 +29,8 @@ def login(request):
 
 def login_with_code(request, login_code):
     code = get_object_or_404(LoginCode.objects.select_related('user'), code=login_code)
-    return login_with_code_and_username(request, username=get_username(code.user), login_code=login_code)
+    return login_with_code_and_username(request, username=get_username(code.user),
+                                        login_code=login_code)
 
 
 def login_with_code_and_username(request, username, login_code):

@@ -34,7 +34,8 @@ class LoginCode(models.Model):
         if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
             view = reverse_lazy('django_nopassword.views.login_with_code', args=[self.code]),
         else:
-            view = reverse_lazy('django_nopassword.views.login_with_code_and_username', args=[username, self.code]),
+            view = reverse_lazy('django_nopassword.views.login_with_code_and_username',
+                                args=[username, self.code]),
 
         return 'http://%s%s?next=%s' % (
             getattr(settings, 'SERVER_URL', 'example.com'),
@@ -62,7 +63,7 @@ class LoginCode(models.Model):
 
         code = cls.generate_code()
         login_code = LoginCode(user=user, code=code)
-        if not next is None:
+        if next is not None:
             login_code.next = next
         login_code.save()
         return login_code

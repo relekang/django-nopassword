@@ -4,7 +4,7 @@ DEBUG = False
 USE_SQLITE = False
 
 try:
-    from .local import *
+    from .local import USE_SQLITE
 except ImportError:
     pass
 

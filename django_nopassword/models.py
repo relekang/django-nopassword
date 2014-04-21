@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import string
-from random import choice
+import os
+import hashlib
 from datetime import datetime
 
 from django.conf import settings
@@ -69,6 +69,9 @@ class LoginCode(models.Model):
         return login_code
 
     @classmethod
-    def generate_code(cls, length=20):
-        chars = string.ascii_letters + string.digits
-        return ''.join([choice(chars) for i in range(length)])
+    def generate_code(cls, length=40):
+        hash_algorithm = getattr(settings, 'NOPASSWORD_HASH_ALGORITHM', 'sha256')
+        m = getattr(hashlib, hash_algorithm)()
+        m.update(getattr(settings, 'SECRET_KEY', None))
+        m.update(os.urandom(16).encode('hex'))
+        return m.hexdigest()[:length]

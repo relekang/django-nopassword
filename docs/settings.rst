@@ -22,6 +22,10 @@ django-nopassword settings
 
     Sets Email Subject for Login Emails.
 
+.. attribute:: NOPASSWORD_HASH_ALGORITHM
+
+    Set the algorithm for used in logincode generation. Possible values are those who are supported in hashlib. The value should be set as the name of the attribute in hashlib. Example `hashlib.sha256()` would be `NOPASSWORD_HASH_ALGORITHM = 'sha256'.
+
 Django settings used in django-nopassword
 +++++++++++++++++++++++++++++++++++++++++
 

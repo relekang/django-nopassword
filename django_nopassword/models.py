@@ -69,7 +69,7 @@ class LoginCode(models.Model):
         return login_code
 
     @classmethod
-    def generate_code(cls, length=40):
+    def generate_code(cls, length=20):
         hash_algorithm = getattr(settings, 'NOPASSWORD_HASH_ALGORITHM', 'sha256')
         m = getattr(hashlib, hash_algorithm)()
         m.update(getattr(settings, 'SECRET_KEY', None))

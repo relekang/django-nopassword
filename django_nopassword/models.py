@@ -72,6 +72,6 @@ class LoginCode(models.Model):
     def generate_code(cls, length=20):
         hash_algorithm = getattr(settings, 'NOPASSWORD_HASH_ALGORITHM', 'sha256')
         m = getattr(hashlib, hash_algorithm)()
-        m.update(getattr(settings, 'SECRET_KEY', None))
-        m.update(os.urandom(16).encode('hex'))
+        m.update(getattr(settings, 'SECRET_KEY', None).encode('utf-8'))
+        m.update(os.urandom(16))
         return m.hexdigest()[:length]

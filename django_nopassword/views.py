@@ -60,4 +60,4 @@ def users_json(request):
             'full_name': user.get_full_name(),
         })
 
-    return HttpResponse(json.dumps(users), mimetype="application/json")
+    return HttpResponse(json.dumps(users), content_type="application/json")

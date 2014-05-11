@@ -8,7 +8,8 @@ from django.test.utils import get_runner
 from django.conf import settings
 import django
 
-django.setup()
+if django.VERSION >= (1, 7):
+    django.setup()
 
 
 def runtests():

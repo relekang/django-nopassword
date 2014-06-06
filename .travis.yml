@@ -8,7 +8,7 @@ python:
 env:
   - DJANGO="django==1.5"
   - DJANGO="django==1.6"
-  - DJANGO="https://www.djangoproject.com/download/1.7b4/tarball/"
+  - DJANGO="https://www.djangoproject.com/download/1.7.b4/tarball/"
 
 install:
   - pip install psycopg2

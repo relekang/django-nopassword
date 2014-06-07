@@ -16,7 +16,7 @@ django-nopassword settings
 
 .. attribute:: NOPASSWORD_HIDE_USERNAME
 
-    If set to True, the login url will not contain
+    If set to True, the login url will not contain the username.
 
 .. attribute:: NOPASSWORD_LOGIN_EMAIL_SUBJECT
 

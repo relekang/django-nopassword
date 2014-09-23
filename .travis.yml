@@ -2,13 +2,12 @@ language: python
 
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
 
 env:
   - DJANGO="django==1.5"
   - DJANGO="django==1.6"
-  - DJANGO="https://www.djangoproject.com/download/1.7.b4/tarball/"
+  - DJANGO="django==1.7"
 
 install:
   - pip install psycopg2

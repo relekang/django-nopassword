@@ -5,3 +5,4 @@ venv/
 dist/
 tests/local.py
 docs/_build/
+.tox/

@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^login/$', 'django_nopassword.views.login', name='login'),
     url(r'^login-code/(?P<login_code>[a-zA-Z0-9]+)/$',
         'django_nopassword.views.login_with_code'),

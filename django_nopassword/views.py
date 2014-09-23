@@ -21,7 +21,7 @@ def login(request):
             })[0]
             code.next = request.GET.get('next')
             code.save()
-            code.send_login_email()
+            code.send_login_code()
             return render(request, 'registration/sent_mail.html')
 
     return django_login(request, authentication_form=AuthenticationForm)

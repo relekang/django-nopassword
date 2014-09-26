@@ -4,9 +4,8 @@ import hashlib
 from datetime import datetime
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse_lazy
-from django.template.loader import render_to_string
+from django.contrib.auth import get_backends
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
@@ -43,18 +42,10 @@ class LoginCode(models.Model):
             self.next
         )
 
-    def send_login_email(self):
-        subject = getattr(settings, 'NOPASSWORD_LOGIN_EMAIL_SUBJECT', _('Login code'))
-        to_email = [self.user.email]
-        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'root@example.com')
-
-        context = {'url': self.login_url(), 'code': self}
-        text_content = render_to_string('registration/login_email.txt', context)
-        html_content = render_to_string('registration/login_email.html', context)
-
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-        msg.attach_alternative(html_content, 'text/html')
-        msg.send()
+    def send_login_code(self):
+        for backend in get_backends():
+            if hasattr(backend, 'send_login_code'):
+                backend.send_login_code(self)
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

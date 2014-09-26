@@ -1,23 +1,21 @@
 language: python
 
-python:
-  - "2.7"
-  - "3.4"
-
 env:
-  - DJANGO="django==1.5"
-  - DJANGO="django==1.6"
-  - DJANGO="django==1.7"
+  - TOXENV=py27-django14
+  - TOXENV=py27-django15
+  - TOXENV=py27-django16
+  - TOXENV=py27-django17
+  - TOXENV=py34-django15
+  - TOXENV=py34-django16
+  - TOXENV=py34-django17
 
 install:
-  - pip install psycopg2
-  - pip install $DJANGO
+  - pip install tox
   - pip install coverage coveralls
 
 script:
-  - coverage run --source=django_nopassword setup.py test
+  - tox
   - coverage report
-
 
 before_script:
   - psql -c 'create database django_nopassword;' -U postgres

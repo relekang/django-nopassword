@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'LoginCode'
-        db.create_table(u'django_nopassword_logincode', (
+        db.create_table(u'nopassword_logincode', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(
                 related_name='login_codes', to=orm[AUTH_USER_MODEL]
@@ -18,11 +18,11 @@ class Migration(SchemaMigration):
             ('timestamp', self.gf('django.db.models.fields.DateTimeField')()),
             ('next', self.gf('django.db.models.fields.TextField')(blank=True)),
         ))
-        db.send_create_signal(u'django_nopassword', ['LoginCode'])
+        db.send_create_signal(u'nopassword', ['LoginCode'])
 
     def backwards(self, orm):
         # Deleting model 'LoginCode'
-        db.delete_table(u'django_nopassword_logincode')
+        db.delete_table(u'nopassword_logincode')
 
     models = {
         u'auth.group': {
@@ -57,7 +57,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'django_nopassword.logincode': {
+        u'nopassword.logincode': {
             'Meta': {'object_name': 'LoginCode'},
             'code': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -69,4 +69,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['django_nopassword']
+    complete_apps = ['nopassword']

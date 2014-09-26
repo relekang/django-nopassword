@@ -7,10 +7,10 @@ from django.http import Http404
 from django.test import RequestFactory
 from django.test.utils import override_settings
 from django.utils import unittest
-from django_nopassword import views
 
-from django_nopassword.models import LoginCode
-from django_nopassword.utils import get_user_model
+from nopassword import views
+from nopassword.models import LoginCode
+from nopassword.utils import get_user_model
 
 from .models import NoUsernameUser
 

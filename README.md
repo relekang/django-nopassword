@@ -18,21 +18,21 @@ Add the app to installed apps
 ```python
 INSTALLED_APPS = (
     ...
-    'django_nopassword',
+    'nopassword',
     ...
 )
 ```
 
 Set the authentication backend to *EmailBackend*
 
-    AUTHENTICATION_BACKENDS = ( 'django_nopassword.backends.EmailBackend', )
+    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.EmailBackend', )
 
 Add urls to your *urls.py*
 
 ```python
 urlpatterns = patterns('',
     ...
-    url(r'^accounts/', include('django_nopassword.urls')),
+    url(r'^accounts/', include('nopassword.urls')),
     ...
 )
 ```

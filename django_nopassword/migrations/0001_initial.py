@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LoginCode',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True,
-                 primary_key=True)),
-                ('code', models.CharField(verbose_name='code', max_length=20, editable=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID',
+                 auto_created=True)),
+                ('code', models.CharField(editable=False, verbose_name='code', max_length=20)),
                 ('timestamp', models.DateTimeField(editable=False)),
-                ('next', models.TextField(editable=False, blank=True)),
-                ('user', models.ForeignKey(related_name=b'login_codes', editable=False,
-                 to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                ('next', models.TextField(blank=True, editable=False)),
+                ('user', models.ForeignKey(related_name='login_codes', verbose_name='user',
+                 to=settings.AUTH_USER_MODEL, editable=False)),
             ],
             options={
             },

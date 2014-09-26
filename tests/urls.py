@@ -3,5 +3,5 @@ from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns(
     '',
-    url(r'^accounts/', include('django_nopassword.urls')),
+    url(r'^accounts/', include('nopassword.urls')),
 )

@@ -34,11 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
 
-    'django_nopassword',
+    'nopassword',
     'tests',
 ]
 AUTHENTICATION_BACKENDS = (
-    'django_nopassword.backends.EmailBackend',
+    'nopassword.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend'
 )
 

@@ -12,12 +12,10 @@ from .models import LoginCode
 
 class NoPasswordBackend:
 
-    supports_inactive_user = True
-
     def authenticate(self, code=None, **credentials):
         try:
             user = get_user_model().objects.get(**credentials)
-            if not user.is_active:
+            if not self.verify_user(user):
                 return None
 
             if code is None:
@@ -41,6 +39,9 @@ class NoPasswordBackend:
 
     def send_login_code(self):
         raise NotImplementedError
+
+    def verify_user(self, user):
+        return user.is_active
 
 
 class EmailBackend(NoPasswordBackend):

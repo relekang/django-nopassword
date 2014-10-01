@@ -2,8 +2,8 @@
 import time
 
 from django.contrib.auth import authenticate
-from django.test import Client
 from django.http import Http404
+from django.test import Client
 from django.test import RequestFactory
 from django.test.utils import override_settings
 from django.utils import unittest
@@ -11,6 +11,7 @@ from django.utils import unittest
 from nopassword import views
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
+from nopassword.backends import NoPasswordBackend
 
 from .models import NoUsernameUser
 
@@ -19,6 +20,10 @@ class TestLoginCodes(unittest.TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='test_user')
         self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)
+
+    def tearDown(self):
+        self.user.delete()
+        self.inactive_user.delete()
 
     def test_login_backend(self):
         self.code = LoginCode.create_code_for_user(self.user)
@@ -42,10 +47,6 @@ class TestLoginCodes(unittest.TestCase):
         time.sleep(3)
         self.assertIsNone(authenticate(username=self.user.username, code=self.timeout_code.code))
 
-    def tearDown(self):
-        self.user.delete()
-        self.inactive_user.delete()
-
 
 class AuthenticationBackendTests(unittest.TestCase):
 
@@ -64,6 +65,9 @@ class TestViews(unittest.TestCase):
     def setUp(self):
         self.c = Client()
         self.user = get_user_model().objects.create(username='user')
+
+    def tearDown(self):
+        self.user.delete()
 
     def test_login(self):
         response = self.c.get('/accounts/login/')
@@ -102,9 +106,6 @@ class TestViews(unittest.TestCase):
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)
 
-    def tearDown(self):
-        self.user.delete()
-
 
 class TestUsersJsonView(unittest.TestCase):
 
@@ -124,3 +125,21 @@ class TestUsersJsonView(unittest.TestCase):
         request = self.factory.get('/accounts/users.json')
         response = views.users_json(request)
         self.assertEqual(response.status_code, 200)
+
+
+class TestBackendUtils(unittest.TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create(username='test_user')
+        self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)
+        self.backend = NoPasswordBackend()
+
+    def tearDown(self):
+        self.user.delete()
+        self.inactive_user.delete()
+
+    def test_verify_user(self):
+        self.assertTrue(self.backend.verify_user(self.user))
+        self.assertFalse(self.backend.verify_user(self.inactive_user))
+
+    def test_send_login_code(self):
+        self.assertRaises(NotImplementedError, self.backend.send_login_code)

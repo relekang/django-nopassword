@@ -16,6 +16,12 @@ Add urls to your *urls.py*::
         url(r'^accounts/', include('nopassword.urls')),
     )
 
+Verify users
+~~~~~~~~~~~~
+If it is necessary to verify that users still are active in another system. Override
+*verify_user(user)* to implement your check. In *NoPasswordBackend* that method checks
+whether the user is active in the django app.
+
 Custom backends
 ~~~~~~~~~~~~~~~
 In backends.py there is a *NoPasswordBackend*, from which it is possible

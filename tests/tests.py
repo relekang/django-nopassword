@@ -80,11 +80,15 @@ class TestViews(unittest.TestCase):
                                                                       'wrongcode'))
         self.assertEqual(login_with_code.status_code, 404)
 
-        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (
+        login_url = '/accounts/login-code/%s/%s/' % (
             self.user.username,
-            LoginCode.objects.all()[0].code)
+            LoginCode.objects.all()[0].code
         )
-        self.assertEqual(login_with_code.status_code, 302)
+        login_with_code = self.c.get(login_url)
+        self.assertEqual(login_with_code.status_code, 200)
+
+        login_post = self.c.post(login_url)
+        self.assertEqual(login_post.status_code, 302)
 
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)
@@ -100,8 +104,12 @@ class TestViews(unittest.TestCase):
         login_with_code = self.c.get('/accounts/login-code/%s/' % 'wrongcode')
         self.assertEqual(login_with_code.status_code, 404)
 
-        login_with_code = self.c.get('/accounts/login-code/%s/' % LoginCode.objects.all()[0].code)
-        self.assertEqual(login_with_code.status_code, 302)
+        code_url = '/accounts/login-code/%s/' % LoginCode.objects.all()[0].code
+        login_with_code = self.c.get(code_url)
+        self.assertEqual(login_with_code.status_code, 200)
+
+        login_post = self.c.post(code_url)
+        self.assertEqual(login_post.status_code, 302)
 
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)

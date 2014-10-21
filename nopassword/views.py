@@ -36,11 +36,13 @@ def login_with_code(request, login_code):
 
 def login_with_code_and_username(request, username, login_code):
     code = get_object_or_404(LoginCode, code=login_code)
-    user = authenticate(**{get_username_field(): username, 'code': login_code})
-    if user is None:
-        raise Http404
-    user = auth_login(request, user)
-    return redirect(code.next)
+    if request.method == 'POST':
+        user = authenticate(**{get_username_field(): username, 'code': login_code})
+        if user is None:
+            raise Http404
+        user = auth_login(request, user)
+        return redirect(code.next)
+    return render(request, 'registration/login_submit.html')
 
 
 def logout(request, redirect_to=None):

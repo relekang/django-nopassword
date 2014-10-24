@@ -41,6 +41,12 @@ urlpatterns = patterns('',
 )
 ```
 
+### Settings
+Information about the available settings can be found in the [docs](http://django-nopassword.readthedocs.org/en/latest/#settings)
+
 ## Tests
 Run with `python setup.py test`.
 To run with sqlite add `USE_SQLITE = True` in tests/local.py
+
+--------
+MIT © Rolf Erik Lekang

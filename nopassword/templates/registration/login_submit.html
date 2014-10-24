@@ -1,14 +1,16 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Logging in...</title>
+    <title>{% trans "Logging in" %}...</title>
 </head>
 <body onload="document.getElementById('login').submit();">
-<form action="." method="POST" id='login'>
+  <h2>{% trans "Logging in" %}...</h2>
+  <form action="." method="POST" id='login'>
     {% csrf_token %}
     <noscript>
-        <input type="submit" value="Login">
+      <input type="submit" value="{% trans "Click here to login" %}">
     </noscript>
-</form>
+  </form>
 </body>
 </html>

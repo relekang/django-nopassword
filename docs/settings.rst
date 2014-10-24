@@ -26,6 +26,10 @@ django-nopassword settings
 
     Set the algorithm for used in logincode generation. Possible values are those who are supported in hashlib. The value should be set as the name of the attribute in hashlib. Example `hashlib.sha256()` would be `NOPASSWORD_HASH_ALGORITHM = 'sha256'.
 
+.. attribute:: NOPASSWORD_POST_REDIRECT
+
+    By default, the login code url requires a POST request to authenticate the user. A GET request renders ``registration/login_submit.html``, which contains some Javascript that automatically performs the POST on page load. To authenticate directly inside the initial GET request instead, set this to ``False``.
+
 Django settings used in django-nopassword
 +++++++++++++++++++++++++++++++++++++++++
 

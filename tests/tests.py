@@ -60,6 +60,7 @@ class AuthenticationBackendTests(unittest.TestCase):
         self.assertIsNone(result)
 
 
+
 class TestViews(unittest.TestCase):
 
     def setUp(self):

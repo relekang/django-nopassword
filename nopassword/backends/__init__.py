@@ -10,7 +10,7 @@ from nopassword.utils import get_user_model
 from nopassword.models import LoginCode
 
 
-class NoPasswordBackend:
+class NoPasswordBackend(object):
     def authenticate(self, code=None, **credentials):
         try:
             user = get_user_model().objects.get(**credentials)

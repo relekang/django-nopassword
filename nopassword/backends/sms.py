@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core import checks
 from django.template.loader import render_to_string
 from nopassword.backends import NoPasswordBackend
 from twilio.rest import TwilioRestClient

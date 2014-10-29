@@ -5,10 +5,10 @@ from nopassword.backends import NoPasswordBackend
 from twilio.rest import TwilioRestClient
 
 
-class SMSBackend(NoPasswordBackend):
+class TwilioBackend(NoPasswordBackend):
     def __init__(self):
         self.twilio_client = TwilioRestClient(settings.NOPASSWORD_TWILIO_SID, settings.NOPASSWORD_TWILIO_AUTH_TOKEN)
-        super(SMSBackend, self).__init__()
+        super(TwilioBackend, self).__init__()
 
     def send_login_code(self, code):
         """

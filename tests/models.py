@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
         super(CustomUser, self).save(*args, **kwargs)
 
 class PhoneNumberUser(CustomUser):
-    phone_number = models.CharField(max_length=11, default="+19714007257")
+    phone_number = models.CharField(max_length=11, default="+15555555")
 
 class NoUsernameUser(models.Model):
     """User model without a "username" field for authentication

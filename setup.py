@@ -9,8 +9,7 @@ setup(
     url='http://github.com/relekang/django-nopassword',
     author='Rolf Erik Lekang',
     author_email='me@rolflekang.com',
-    description='Authentication backend for django that uses '
-                'email verification instead of passwords',
+    description='Authentication backend for django that uses a one time code instead of passwords',
     packages=find_packages(exclude='tests'),
     tests_require=[
         'django>=1.4',

@@ -22,6 +22,20 @@ If it is necessary to verify that users still are active in another system. Over
 *verify_user(user)* to implement your check. In *NoPasswordBackend* that method checks
 whether the user is active in the django app.
 
+Backends
+++++++++
+There are several predefined backends. Usage of those backends are listed below.
+
+.. currentmodule:: nopassword.backends
+
+.. class:: EmailBackend
+Delivers the code by email. It uses the django send email functionality to send
+the emails. It will attach both HTML and plain-text versions of the email.
+
+.. class:: TwilioBackend
+Delivers the code by sms sent through the twilio service.
+
+
 Custom backends
 ~~~~~~~~~~~~~~~
 In backends.py there is a *NoPasswordBackend*, from which it is possible

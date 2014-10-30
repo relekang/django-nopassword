@@ -6,8 +6,6 @@
 Welcome to django_nopassword's documentation!
 =============================================
 
-Release v\ |version|.
-
 Installation
 ------------
 Run this command to install django-nopassword::

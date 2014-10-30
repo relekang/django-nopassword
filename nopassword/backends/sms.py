@@ -1,12 +1,17 @@
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.template.loader import render_to_string
-from nopassword.backends import NoPasswordBackend
 from twilio.rest import TwilioRestClient
+
+from .base import NoPasswordBackend
 
 
 class TwilioBackend(NoPasswordBackend):
     def __init__(self):
-        self.twilio_client = TwilioRestClient(settings.NOPASSWORD_TWILIO_SID, settings.NOPASSWORD_TWILIO_AUTH_TOKEN)
+        self.twilio_client = TwilioRestClient(
+            settings.NOPASSWORD_TWILIO_SID,
+            settings.NOPASSWORD_TWILIO_AUTH_TOKEN
+        )
         super(TwilioBackend, self).__init__()
 
     def send_login_code(self, code):
@@ -18,4 +23,8 @@ class TwilioBackend(NoPasswordBackend):
         context = {'url': code.login_url(), 'code': code}
         sms_content = render_to_string('registration/login_sms.txt', context)
 
-        self.twilio_client.messages.create(to=code.user.phone_number, from_=from_number, body=sms_content)
+        self.twilio_client.messages.create(
+            to=code.user.phone_number,
+            from_=from_number,
+            body=sms_content
+        )

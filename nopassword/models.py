@@ -52,7 +52,7 @@ class LoginCode(models.Model):
         if not user.is_active:
             return None
 
-        code = cls.generate_code()
+        code = cls.generate_code(length=getattr(settings, 'NOPASSWORD_CODE_LENGTH', 20))
         login_code = LoginCode(user=user, code=code)
         if next is not None:
             login_code.next = next

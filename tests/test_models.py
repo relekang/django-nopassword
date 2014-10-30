@@ -30,6 +30,11 @@ class TestLoginCodes(unittest.TestCase):
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
         self.assertIsNone(authenticate(username=self.inactive_user.username))
 
+    @override_settings(NOPASSWORD_CODE_LENGTH=8)
+    def test_shorter_code(self):
+        self.code = LoginCode.create_code_for_user(self.user)
+        self.assertEqual(len(self.code.code), 8)
+
     def test_next_value(self):
         self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
         self.assertEqual(self.code.next, '/secrets/')

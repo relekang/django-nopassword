@@ -6,18 +6,16 @@ from django.core.exceptions import FieldError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from .utils import get_user_model
-from .models import LoginCode
+from nopassword.utils import get_user_model
+from nopassword.models import LoginCode
 
 
-class NoPasswordBackend:
-
+class NoPasswordBackend(object):
     def authenticate(self, code=None, **credentials):
         try:
             user = get_user_model().objects.get(**credentials)
             if not self.verify_user(user):
                 return None
-
             if code is None:
                 return LoginCode.create_code_for_user(user)
             else:

@@ -7,13 +7,18 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test.utils import override_settings
 from django.utils import unittest
+from django.conf import settings
+from django.template.loader import render_to_string
+
+from mock import patch, MagicMock
 
 from nopassword import views
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 from nopassword.backends import NoPasswordBackend
+from nopassword.backends.sms import TwilioBackend
 
-from .models import NoUsernameUser
+from .models import NoUsernameUser, PhoneNumberUser
 
 
 class TestLoginCodes(unittest.TestCase):
@@ -49,15 +54,37 @@ class TestLoginCodes(unittest.TestCase):
 
 
 class AuthenticationBackendTests(unittest.TestCase):
-
     @override_settings(AUTH_USER_MODULE=NoUsernameUser)
     def test_authenticate_with_custom_user_model(self):
         """When a custom user model is used that doesn't have a field
         called "username" return `None`
         """
-
         result = authenticate(username='username')
         self.assertIsNone(result)
+
+
+    @patch('nopassword.backends.sms.TwilioRestClient')
+    @override_settings(AUTH_USER_MODEL='tests.PhoneNumberUser',
+                       NOPASSWORD_TWILIO_SID="aaaaaaaa", NOPASSWORD_TWILIO_AUTH_TOKEN="bbbbbbbb", DEFAULT_FROM_NUMBER="+15555555")
+    def test_twilio_backend(self, mock_object):
+        self.user = get_user_model().objects.create(username='twilio_user')
+        self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
+        self.assertEqual(len(self.code.code), 20)
+        self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
+        self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
+
+        self.backend = TwilioBackend()
+        self.backend.twilio_client.messages.create = MagicMock()
+
+        self.backend.send_login_code(self.code)
+        self.assertTrue(mock_object.called)
+        self.assertTrue(self.backend.twilio_client.messages.create.called)
+
+        authenticate(username=self.user.username)
+        self.assertEqual(LoginCode.objects.filter(user=self.user).count(), 1)
+
+        self.user.delete()
+
 
 
 class TestViews(unittest.TestCase):

@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.template.loader import render_to_string
 from twilio.rest import TwilioRestClient
 
-from .backends import NoPasswordBackend
+from .base import NoPasswordBackend
 
 
 class TwilioBackend(NoPasswordBackend):

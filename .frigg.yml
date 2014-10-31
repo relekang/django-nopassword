@@ -1,0 +1,4 @@
+tasks:
+ - echo 'USE_SQLITE=True' > tests/local.py
+ - tox
+ - flake8

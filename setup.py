@@ -5,7 +5,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
 setup(
     name="django-nopassword",
-    version='1.1.0',
+    version='1.2.0',
     url='http://github.com/relekang/django-nopassword',
     author='Rolf Erik Lekang',
     author_email='me@rolflekang.com',

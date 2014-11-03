@@ -65,4 +65,8 @@ class LoginCode(models.Model):
         m = getattr(hashlib, hash_algorithm)()
         m.update(getattr(settings, 'SECRET_KEY', None).encode('utf-8'))
         m.update(os.urandom(16))
-        return m.hexdigest()[:length]
+        if getattr(settings, 'NOPASSWORD_NUMERIC_CODES', False):
+            hashed = str(int(m.hexdigest(), 16))[-length:]
+        else:
+            hashed = m.hexdigest()[:length]
+        return hashed

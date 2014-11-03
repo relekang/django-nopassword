@@ -35,6 +35,12 @@ class TestLoginCodes(unittest.TestCase):
         self.code = LoginCode.create_code_for_user(self.user)
         self.assertEqual(len(self.code.code), 8)
 
+    @override_settings(NOPASSWORD_NUMERIC_CODES=True)
+    def test_shorter_code(self):
+        self.code = LoginCode.create_code_for_user(self.user)
+        self.assertEqual(len(self.code.code), 20)
+        self.assertTrue(self.code.code.isdigit())
+
     def test_next_value(self):
         self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
         self.assertEqual(self.code.next, '/secrets/')

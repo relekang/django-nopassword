@@ -1,4 +1,10 @@
 tasks:
  - echo 'USE_SQLITE=True' > tests/local.py
- - tox
+ - tox -e py27-django14
+ - tox -e py27-django15
+ - tox -e py27-django16
+ - tox -e py27-django17
+ - tox -e py34-django15
+ - tox -e py34-django16
+ - tox -e py34-django17
  - flake8

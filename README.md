@@ -1,5 +1,5 @@
 # django-nopassword
-[![Build Status](https://travis-ci.org/relekang/django-nopassword.svg?branch=master)](https://travis-ci.org/relekang/django-nopassword)
+[![Build status](https://ci.frigg.io/badges/relekang/django-nopassword/)](https://ci.frigg.io/relekang/django-nopassword/)
 [![PyPi version](https://pypip.in/v/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)
 [![Wheel Status](https://pypip.in/wheel/django-nopassword/badge.svg)](https://pypi.python.org/pypi/django-nopassword/)
 [![Downloads](https://pypip.in/download/django-nopassword/badge.svg)](https://pypi.python.org/pypi/django-nopassword/)

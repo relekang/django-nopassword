@@ -6,6 +6,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import get_backends
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
@@ -23,7 +24,11 @@ class LoginCode(models.Model):
         return "%s - %s" % (self.user, self.timestamp)
 
     def save(self, *args, **kwargs):
-        self.timestamp = datetime.now()
+        if settings.USE_TZ:
+            self.timestamp = timezone.now()
+        else:
+            self.timestamp = datetime.now()
+
         if not self.next:
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)

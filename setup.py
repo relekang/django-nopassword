@@ -13,7 +13,7 @@ setup(
     packages=find_packages(exclude='tests'),
     tests_require=[
         'django>=1.4',
-        'twilio==3.6.8',
+        'twilio>=3.6.10',
         'mock>=1.0'
     ],
     license='MIT',

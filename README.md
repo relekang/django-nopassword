@@ -29,7 +29,7 @@ INSTALLED_APPS = (
 
 Set the authentication backend to *EmailBackend*
 
-    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.EmailBackend', )
+    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.email.EmailBackend', )
 
 Add urls to your *urls.py*
 

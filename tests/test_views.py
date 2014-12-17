@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 from django.utils import unittest
 from django.http import Http404
+from django.contrib.auth import SESSION_KEY
 from django.test import RequestFactory, Client
 from django.test.utils import override_settings
 
@@ -38,6 +39,7 @@ class TestViews(unittest.TestCase):
 
         login_post = self.c.post(login_url)
         self.assertEqual(login_post.status_code, 302)
+        self.assertIn(SESSION_KEY, self.c.session)
 
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)
@@ -53,6 +55,7 @@ class TestViews(unittest.TestCase):
         )
         login_with_code = self.c.get(login_url)
         self.assertEqual(login_with_code.status_code, 302)
+        self.assertIn(SESSION_KEY, self.c.session)
 
     @override_settings(NOPASSWORD_HIDE_USERNAME=True)
     def test_hide_username(self):

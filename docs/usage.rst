@@ -8,7 +8,7 @@ Add the app to installed apps::
 
 Set the authentication backend to *EmailBackend*::
 
-    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.EmailBackend', )
+    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.email.EmailBackend', )
 
 Add urls to your *urls.py*::
 
@@ -26,11 +26,13 @@ Backends
 ++++++++
 There are several predefined backends. Usage of those backends are listed below.
 
-.. currentmodule:: nopassword.backends
+.. currentmodule:: nopassword.backends.email
 
 .. class:: EmailBackend
 Delivers the code by email. It uses the django send email functionality to send
 the emails. It will attach both HTML and plain-text versions of the email.
+
+.. currentmodule:: nopassword.backends.sms
 
 .. class:: TwilioBackend
 Delivers the code by sms sent through the twilio service.

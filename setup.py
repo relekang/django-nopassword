@@ -3,6 +3,15 @@ from setuptools import setup, find_packages
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
 
+
+def _read_long_description():
+    try:
+        import pypandoc
+        return pypandoc.convert('README.md', 'rst')
+    except ImportError:
+        return None
+
+
 setup(
     name="django-nopassword",
     version='1.3.1',
@@ -10,6 +19,7 @@ setup(
     author='Rolf Erik Lekang',
     author_email='me@rolflekang.com',
     description='Authentication backend for django that uses a one time code instead of passwords',
+    long_description=_read_long_description(),
     packages=find_packages(exclude='tests'),
     tests_require=[
         'django>=1.4',

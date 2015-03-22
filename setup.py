@@ -21,6 +21,9 @@ setup(
     description='Authentication backend for django that uses a one time code instead of passwords',
     long_description=_read_long_description(),
     packages=find_packages(exclude='tests'),
+    install_require=[
+        'django>=1.4',
+    ],
     tests_require=[
         'django>=1.4',
         'twilio==3.7.3',

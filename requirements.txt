@@ -1,0 +1,4 @@
+twilio==3.7.3
+mock>=1.0
+coverage
+psycopg2

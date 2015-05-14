@@ -26,7 +26,7 @@ setup(
     ],
     tests_require=[
         'django>=1.4',
-        'twilio==4.0.0',
+        'twilio==4.3.0',
         'mock>=1.0'
     ],
     license='MIT',

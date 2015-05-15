@@ -82,15 +82,13 @@ class TestViews(unittest.TestCase):
 
     @patch.object(LoginCode, 'send_login_code')
     def test_https_request(self, mock_send_login_code):
-        factory = RequestFactory()
-        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, secure=True)
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, **{'wsgi.url_scheme': 'https'})
         self.assertEqual(login.status_code, 200)
         mock_send_login_code.assert_called_with(secure=True)
 
     @patch.object(LoginCode, 'send_login_code')
     def test_http_request(self, mock_send_login_code):
-        factory = RequestFactory()
-        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, secure=False)
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, **{'wsgi.url_scheme': 'http'})
         self.assertEqual(login.status_code, 200)
         mock_send_login_code.assert_called_with(secure=False)
 

@@ -32,7 +32,7 @@ class NoPasswordBackend(object):
         except get_user_model().DoesNotExist:
             return None
 
-    def send_login_code(self, code, secure=False):
+    def send_login_code(self, code, secure=False, **kwargs):
         raise NotImplementedError
 
     def verify_user(self, user):

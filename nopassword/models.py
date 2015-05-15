@@ -48,10 +48,10 @@ class LoginCode(models.Model):
             self.next
         )
 
-    def send_login_code(self, secure=False):
+    def send_login_code(self, secure=False, **kwargs):
         for backend in get_backends():
             if hasattr(backend, 'send_login_code'):
-                backend.send_login_code(self, secure=secure)
+                backend.send_login_code(self, secure=secure, **kwargs)
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

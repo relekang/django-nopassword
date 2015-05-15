@@ -14,13 +14,13 @@ class TwilioBackend(NoPasswordBackend):
         )
         super(TwilioBackend, self).__init__()
 
-    def send_login_code(self, code):
+    def send_login_code(self, code, secure=False, **kwargs):
         """
         Send a login code via SMS
         """
         from_number = getattr(settings, 'DEFAULT_FROM_NUMBER')
 
-        context = {'url': code.login_url(), 'code': code}
+        context = {'url': code.login_url(secure=secure), 'code': code}
         sms_content = render_to_string('registration/login_sms.txt', context)
 
         self.twilio_client.messages.create(

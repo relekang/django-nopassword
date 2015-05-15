@@ -10,10 +10,6 @@ django-nopassword settings
 
     Defines how long a login code is valid in seconds.
 
-.. attribute:: NOPASSWORD_AUTOCOMPLETE
-
-    Activates autocomplete in login form. Be aware of the potensial security risk and privacy risk by publicly viewing all usernames and full names. Only do this if you are certain your users would not mind.
-
 .. attribute:: NOPASSWORD_HIDE_USERNAME
 
     If set to True, the login url will not contain the username.

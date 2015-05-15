@@ -2,12 +2,10 @@
 from mock import patch
 
 from django.utils import unittest
-from django.http import Http404
 from django.contrib.auth import SESSION_KEY
-from django.test import RequestFactory, Client
+from django.test import Client
 from django.test.utils import override_settings
 
-from nopassword import views
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 
@@ -95,23 +93,3 @@ class TestViews(unittest.TestCase):
                             **{'wsgi.url_scheme': 'http'})
         self.assertEqual(login.status_code, 200)
         mock_send_login_code.assert_called_with(secure=False)
-
-
-class TestUsersJsonView(unittest.TestCase):
-
-    def setUp(self):
-        self.factory = RequestFactory()
-
-    def test_404(self):
-        request = self.factory.get('/accounts/users.json')
-        try:
-            response = views.users_json(request)
-            self.assertEqual(response.status_code, 404)
-        except Http404:
-            pass
-
-    @override_settings(NOPASSWORD_AUTOCOMPLETE=True)
-    def test_200(self):
-        request = self.factory.get('/accounts/users.json')
-        response = views.users_json(request)
-        self.assertEqual(response.status_code, 200)

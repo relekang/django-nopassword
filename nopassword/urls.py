@@ -9,5 +9,4 @@ urlpatterns = patterns(
     url(r'^login-code/(?P<username>[a-zA-Z0-9_@\.-]+)/(?P<login_code>[a-zA-Z0-9]+)/$',
         'nopassword.views.login_with_code_and_username'),
     url(r'^logout/$', 'nopassword.views.logout'),
-    url(r'^users.json$', 'nopassword.views.users_json'),
 )

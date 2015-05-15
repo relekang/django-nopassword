@@ -50,7 +50,10 @@ class AuthenticationBackendTests(unittest.TestCase):
     @skipIf(django.VERSION < (1, 5), 'Custom user not supported')
     @override_settings(AUTH_USER_MODULE='tests.NoUsernameUser')
     def test_email_backend(self):
-        user = get_user_model().objects.create(username='email_user', email='nopassword@example.com')
+        user = get_user_model().objects.create(
+            username='email_user',
+            email='nopassword@example.com',
+        )
         code = LoginCode.create_code_for_user(user, next='/secrets/')
         backend = EmailBackend()
 
@@ -89,4 +92,7 @@ class TestBackendUtils(unittest.TestCase):
         self.assertFalse(self.backend.verify_user(self.inactive_user))
 
     def test_send_login_code(self):
-        self.assertRaises(NotImplementedError, self.backend.send_login_code, code=None, secure=False)
+        self.assertRaises(NotImplementedError,
+                          self.backend.send_login_code,
+                          code=None,
+                          secure=False)

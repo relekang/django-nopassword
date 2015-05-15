@@ -1,4 +1,6 @@
 # -*- coding: utf8 -*-
+from mock import patch
+
 from django.utils import unittest
 from django.http import Http404
 from django.contrib.auth import SESSION_KEY
@@ -77,6 +79,20 @@ class TestViews(unittest.TestCase):
 
         logout = self.c.get('/accounts/logout/')
         self.assertEqual(logout.status_code, 302)
+
+    @patch.object(LoginCode, 'send_login_code')
+    def test_https_request(self, mock_send_login_code):
+        factory = RequestFactory()
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, secure=True)
+        self.assertEqual(login.status_code, 200)
+        mock_send_login_code.assert_called_with(secure=True)
+
+    @patch.object(LoginCode, 'send_login_code')
+    def test_http_request(self, mock_send_login_code):
+        factory = RequestFactory()
+        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username}, secure=False)
+        self.assertEqual(login.status_code, 200)
+        mock_send_login_code.assert_called_with(secure=False)
 
 
 class TestUsersJsonView(unittest.TestCase):

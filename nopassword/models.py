@@ -33,7 +33,7 @@ class LoginCode(models.Model):
             self.next = '/'
         super(LoginCode, self).save(*args, **kwargs)
 
-    def login_url(self):
+    def login_url(self, secure=False):
         username = get_username(self.user)
         if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
             view = reverse_lazy('nopassword.views.login_with_code', args=[self.code]),
@@ -41,16 +41,17 @@ class LoginCode(models.Model):
             view = reverse_lazy('nopassword.views.login_with_code_and_username',
                                 args=[username, self.code]),
 
-        return 'http://%s%s?next=%s' % (
+        return '%s://%s%s?next=%s' % (
+            'https' if secure else 'http',
             getattr(settings, 'SERVER_URL', 'example.com'),
             view[0],
             self.next
         )
 
-    def send_login_code(self):
+    def send_login_code(self, secure=False):
         for backend in get_backends():
             if hasattr(backend, 'send_login_code'):
-                backend.send_login_code(self)
+                backend.send_login_code(self, secure=secure)
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

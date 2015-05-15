@@ -3,12 +3,13 @@ from unittest import skipIf
 
 import django
 from django.contrib.auth import authenticate
-from django.test.utils import override_settings
+from django.test.utils import override_settings, mail
 from django.utils import unittest
 
 from mock import patch, MagicMock
 
 from nopassword.backends.base import NoPasswordBackend
+from nopassword.backends.email import EmailBackend
 from nopassword.backends.sms import TwilioBackend
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
@@ -46,6 +47,32 @@ class AuthenticationBackendTests(unittest.TestCase):
 
         self.user.delete()
 
+    @skipIf(django.VERSION < (1, 5), 'Custom user not supported')
+    @override_settings(AUTH_USER_MODULE='tests.NoUsernameUser')
+    def test_email_backend(self):
+        user = get_user_model().objects.create(username='email_user', email='nopassword@example.com')
+        code = LoginCode.create_code_for_user(user, next='/secrets/')
+        backend = EmailBackend()
+
+        # send mail once with default secure=False
+        mail.outbox = []
+        backend.send_login_code(code)
+        self.assertEqual(1, len(mail.outbox))
+        message = mail.outbox[0]
+        http_url = code.login_url()
+        self.assertIn(http_url, message.body)
+        self.assertTrue(http_url.startswith('http:'))
+        self.assertEqual(['nopassword@example.com'], message.to)
+
+        # send again with secure=True
+        mail.outbox = []
+        backend.send_login_code(code, secure=True)
+        self.assertEqual(1, len(mail.outbox))
+        message = mail.outbox[0]
+        https_url = code.login_url(True)
+        self.assertTrue(https_url.startswith('https:'))
+        self.assertIn(https_url, message.body)
+
 
 class TestBackendUtils(unittest.TestCase):
     def setUp(self):
@@ -62,4 +89,4 @@ class TestBackendUtils(unittest.TestCase):
         self.assertFalse(self.backend.verify_user(self.inactive_user))
 
     def test_send_login_code(self):
-        self.assertRaises(NotImplementedError, self.backend.send_login_code, code=None)
+        self.assertRaises(NotImplementedError, self.backend.send_login_code, code=None, secure=False)

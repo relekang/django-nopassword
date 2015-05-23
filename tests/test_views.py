@@ -84,7 +84,7 @@ class TestViews(unittest.TestCase):
                             {'username': self.user.username},
                             **{'wsgi.url_scheme': 'https'})
         self.assertEqual(login.status_code, 200)
-        mock_send_login_code.assert_called_with(secure=True)
+        mock_send_login_code.assert_called_with(secure=True, host='testserver:80')
 
     @patch.object(LoginCode, 'send_login_code')
     def test_http_request(self, mock_send_login_code):
@@ -92,4 +92,4 @@ class TestViews(unittest.TestCase):
                             {'username': self.user.username},
                             **{'wsgi.url_scheme': 'http'})
         self.assertEqual(login.status_code, 200)
-        mock_send_login_code.assert_called_with(secure=False)
+        mock_send_login_code.assert_called_with(secure=False, host='testserver')

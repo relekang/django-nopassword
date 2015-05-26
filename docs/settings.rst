@@ -27,15 +27,19 @@ django-nopassword settings
     By default, the login code url requires a POST request to authenticate the user. A GET request renders ``registration/login_submit.html``, which contains some Javascript that automatically performs the POST on page load. To authenticate directly inside the initial GET request instead, set this to ``False``.
 
 .. attribute:: NOPASSWORD_CODE_LENGTH
+
     The length of the code used to log people in. Default is 20.
 
 .. attribute:: NOPASSWORD_TWILIO_SID
+
     Account ID for Twilio.
 
 .. attribute:: NOPASSWORD_TWILIO_AUTH_TOKEN
+
     Account secret for Twilio
     
 .. attribute:: NOPASSWORD_NUMERIC_CODES
+
     A boolean flag if set to True, codes will contain numeric characters only (0-9). Default: False
 
 Django settings used in django-nopassword
@@ -43,9 +47,13 @@ Django settings used in django-nopassword
 
 .. attribute:: SERVER_URL
 
-Default: `example.com`
+    Default: `example.com`
+
+    By default, ``nopassword.views.login`` passes the result of ``result.get_host()`` to
+    ``LoginCode.send_login_code`` to build the login URL. If you write your own view
+    and/or want to avoid this behavior by not passing a value for host, the
+    ``SERVER_URL`` setting will be used instead.
 
 .. attribute:: DEFAULT_FROM_EMAIL
 
-Default: `root@example.com`
-
+    Default: `root@example.com`

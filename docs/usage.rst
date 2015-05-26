@@ -48,12 +48,12 @@ the *EmailBackend*::
 
     class EmailBackend(NoPasswordBackend):
 
-        def send_login_code(self, code, secure=False):
+        def send_login_code(self, code, secure=False, host=None):
             subject = getattr(settings, 'NOPASSWORD_LOGIN_EMAIL_SUBJECT', _('Login code'))
             to_email = [code.user.email]
             from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'root@example.com')
 
-            context = {'url': code.login_url(secure), 'code': code}
+            context = {'url': code.login_url(secure=secure, host=host), 'code': code}
             text_content = render_to_string('registration/login_email.txt', context)
             html_content = render_to_string('registration/login_email.html', context)
 

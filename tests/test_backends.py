@@ -57,9 +57,10 @@ class TwilioBackendTests(SimpleTestCase):
     def test_twilio_backend_with_https(self, mock_object):
         self.backend = TwilioBackend()
         self.backend.twilio_client.messages.create = MagicMock()
-        self.backend.send_login_code(self.code, secure=True)
+        self.backend.send_login_code(self.code, secure=True, host='secure.example.com')
         _, kwargs = self.backend.twilio_client.messages.create.call_args
-        self.assertIn(self.code.login_url(secure=True), kwargs.get('body'))
+        login_url = self.code.login_url(secure=True, host='secure.example.com')
+        self.assertIn(login_url, kwargs.get('body'))
 
 
 @skipIf(django.VERSION < (1, 5), 'Custom user not supported')
@@ -89,10 +90,10 @@ class EmailBackendTests(SimpleTestCase):
     def test_email_backend_with_https(self):
         "Send email via EmailBackend with secure=True"
         mail.outbox = []
-        self.backend.send_login_code(self.code, secure=True)
+        self.backend.send_login_code(self.code, secure=True, host='secure.example.com')
         self.assertEqual(1, len(mail.outbox))
         message = mail.outbox[0]
-        https_url = self.code.login_url(secure=True)
+        https_url = self.code.login_url(secure=True, host='secure.example.com')
         self.assertTrue(https_url.startswith('https:'))
         self.assertIn(https_url, message.body)
 

@@ -14,7 +14,7 @@ def _read_long_description():
 
 setup(
     name="django-nopassword",
-    version='1.3.1',
+    version='2.0.0',
     url='http://github.com/relekang/django-nopassword',
     author='Rolf Erik Lekang',
     author_email='me@rolflekang.com',

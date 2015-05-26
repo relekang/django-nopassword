@@ -59,7 +59,8 @@ class TwilioBackendTests(SimpleTestCase):
         self.backend.twilio_client.messages.create = MagicMock()
         self.backend.send_login_code(self.code, secure=True, host='secure.example.com')
         _, kwargs = self.backend.twilio_client.messages.create.call_args
-        self.assertIn(self.code.login_url(secure=True, host='secure.example.com'), kwargs.get('body'))
+        login_url = self.code.login_url(secure=True, host='secure.example.com')
+        self.assertIn(login_url, kwargs.get('body'))
 
 
 @skipIf(django.VERSION < (1, 5), 'Custom user not supported')

@@ -1,4 +1,6 @@
+import re
 import os
+import sys
 from setuptools import setup, find_packages
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
@@ -11,10 +13,22 @@ def _read_long_description():
     except ImportError:
         return None
 
+with open('nopassword/__init__.py', 'r') as fd:
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+        fd.read(),
+        re.MULTILINE
+    ).group(1)
+
+try:
+    from semantic_release import setup_hook
+    setup_hook(sys.argv)
+except ImportError:
+    pass
 
 setup(
     name="django-nopassword",
-    version='2.0.0',
+    version=version,
     url='http://github.com/relekang/django-nopassword',
     author='Rolf Erik Lekang',
     author_email='me@rolflekang.com',

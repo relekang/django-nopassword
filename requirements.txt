@@ -2,3 +2,5 @@ twilio==4.4.0
 mock>=1.0
 coverage
 psycopg2
+
+python-semantic-release

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-import os
 import hashlib
+import os
 from datetime import datetime
 
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import get_backends
+from django.core.urlresolvers import reverse_lazy
+from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
 
-from .utils import get_username, AUTH_USER_MODEL
+from .utils import AUTH_USER_MODEL, get_username
 
 
 class LoginCode(models.Model):

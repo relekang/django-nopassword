@@ -1,5 +1,7 @@
 tasks:
  - echo 'USE_SQLITE=True' > tests/local.py
+ - tox -e flake8
+ - tox -e isort
  - tox -e py27-django14
  - tox -e py27-django15
  - tox -e py27-django16
@@ -9,7 +11,6 @@ tasks:
  - tox -e py34-django16
  - tox -e py34-django17
  - tox -e py34-django18
- - flake8
  - coverage combine && coverage report && coverage xml
 
 coverage:

@@ -3,11 +3,10 @@ from unittest import skipIf
 
 import django
 from django.contrib.auth import authenticate
-from django.test.utils import override_settings, mail
 from django.test import SimpleTestCase
+from django.test.utils import mail, override_settings
 from django.utils import unittest
-
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 
 from nopassword.backends.base import NoPasswordBackend
 from nopassword.backends.email import EmailBackend

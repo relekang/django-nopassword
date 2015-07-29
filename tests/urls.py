@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from django.conf.urls import patterns, url, include
+from django.conf.urls import include, patterns, url
 
 urlpatterns = patterns(
     '',

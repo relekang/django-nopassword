@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import authenticate
 from django.contrib.auth.views import login as django_login
 from django.http import Http404
-from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AuthenticationForm
-from .utils import get_username_field, get_username
 from .models import LoginCode
+from .utils import get_username, get_username_field
 
 
 def login(request):

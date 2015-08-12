@@ -2,13 +2,14 @@
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import FieldError
 
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 
 
-class NoPasswordBackend(object):
+class NoPasswordBackend(ModelBackend):
     def authenticate(self, code=None, **credentials):
         try:
             user = get_user_model().objects.get(**credentials)
@@ -25,12 +26,6 @@ class NoPasswordBackend(object):
                 login_code.delete()
                 return user
         except (TypeError, get_user_model().DoesNotExist, LoginCode.DoesNotExist, FieldError):
-            return None
-
-    def get_user(self, user_id):
-        try:
-            return get_user_model().objects.get(pk=user_id)
-        except get_user_model().DoesNotExist:
             return None
 
     def send_login_code(self, code, secure=False, host=None, **kwargs):

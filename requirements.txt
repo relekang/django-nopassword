@@ -1,4 +1,4 @@
-twilio==4.4.0
+twilio==4.5.0
 mock>=1.0
 coverage
 psycopg2

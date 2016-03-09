@@ -34,7 +34,7 @@ setup(
     author_email='me@rolflekang.com',
     description='Authentication backend for django that uses a one time code instead of passwords',
     long_description=_read_long_description(),
-    packages=find_packages(exclude='tests'),
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_require=[
         'django>=1.4',
     ],

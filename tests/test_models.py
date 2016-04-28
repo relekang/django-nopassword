@@ -3,13 +3,13 @@ import time
 
 from django.contrib.auth import authenticate
 from django.test.utils import override_settings
-from django.utils import unittest
+from django.test import TestCase
 
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 
 
-class TestLoginCodes(unittest.TestCase):
+class TestLoginCodes(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='test_user')
         self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)

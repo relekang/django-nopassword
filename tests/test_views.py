@@ -2,14 +2,14 @@
 from django.contrib.auth import SESSION_KEY
 from django.test import Client
 from django.test.utils import override_settings
-from django.utils import unittest
+from django.test import TestCase
 from mock import patch
 
 from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 
 
-class TestViews(unittest.TestCase):
+class TestViews(TestCase):
 
     def setUp(self):
         self.c = Client()

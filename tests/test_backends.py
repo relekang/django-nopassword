@@ -3,9 +3,8 @@ from unittest import skipIf
 
 import django
 from django.contrib.auth import authenticate
-from django.test import SimpleTestCase
+from django.test import TestCase
 from django.test.utils import mail, override_settings
-from django.utils import unittest
 from mock import MagicMock, patch
 
 from nopassword.backends.base import NoPasswordBackend
@@ -15,7 +14,7 @@ from nopassword.models import LoginCode
 from nopassword.utils import get_user_model
 
 
-class AuthenticationBackendTests(unittest.TestCase):
+class AuthenticationBackendTests(TestCase):
     @override_settings(AUTH_USER_MODULE='tests.NoUsernameUser')
     def test_authenticate_with_custom_user_model(self):
         """When a custom user model is used that doesn't have a field
@@ -28,7 +27,7 @@ class AuthenticationBackendTests(unittest.TestCase):
 @skipIf(django.VERSION < (1, 5), 'Custom user not supported')
 @override_settings(AUTH_USER_MODEL='tests.PhoneNumberUser', NOPASSWORD_TWILIO_SID="aaaaaaaa",
                    NOPASSWORD_TWILIO_AUTH_TOKEN="bbbbbbbb", DEFAULT_FROM_NUMBER="+15555555")
-class TwilioBackendTests(SimpleTestCase):
+class TwilioBackendTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='twilio_user')
         self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
@@ -63,7 +62,7 @@ class TwilioBackendTests(SimpleTestCase):
 
 
 @skipIf(django.VERSION < (1, 5), 'Custom user not supported')
-class EmailBackendTests(SimpleTestCase):
+class EmailBackendTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username='email_user',
@@ -97,7 +96,7 @@ class EmailBackendTests(SimpleTestCase):
         self.assertIn(https_url, message.body)
 
 
-class TestBackendUtils(unittest.TestCase):
+class TestBackendUtils(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='test_user')
         self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)

@@ -1,8 +1,7 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth import SESSION_KEY
-from django.test import Client
+from django.test import Client, TestCase
 from django.test.utils import override_settings
-from django.test import TestCase
 from mock import patch
 
 from nopassword.models import LoginCode

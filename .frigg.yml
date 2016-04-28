@@ -2,17 +2,11 @@ tasks:
  - echo 'USE_SQLITE=True' > tests/local.py
  - tox -e flake8
  - tox -e isort
- - tox -e py27-django14
- - tox -e py27-django15
- - tox -e py27-django16
- - tox -e py27-django17
- - tox -e py27-django18
- - tox -e py34-django15
- - tox -e py34-django16
- - tox -e py34-django17
- - tox -e py34-django18
- - tox -e py34-django19
- - coverage combine && coverage report && coverage xml
+ - tox -e py2-django18
+ - tox -e py2-django19
+ - tox -e py3-django18
+ - tox -e py3-django19
+ - tox -e coverage
 
 coverage:
   path: coverage.xml

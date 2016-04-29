@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.shortcuts import get_current_site
 
 from .utils import AUTH_USER_MODEL, get_username
 
@@ -35,12 +36,16 @@ class LoginCode(models.Model):
 
     def login_url(self, secure=False, host=None):
         username = get_username(self.user)
-        host = host or getattr(settings, 'SERVER_URL', None) or 'example.com'
+        site = get_current_site(None)
+        if site:
+            host = site.domain
+        else:
+            host = getattr(settings, 'SERVER_URL', None) or 'example.com'
         if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
-            view = reverse_lazy('nopassword.views.login_with_code', args=[self.code]),
+            view = reverse_lazy('nopassword.views.login_with_code', kwargs={'login_code': self.code}),
         else:
             view = reverse_lazy('nopassword.views.login_with_code_and_username',
-                                args=[username, self.code]),
+                                kwargs={'username': username, 'login_code': self.code}),
 
         return '%s://%s%s?next=%s' % (
             'https' if secure else 'http',

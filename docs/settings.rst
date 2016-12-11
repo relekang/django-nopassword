@@ -10,6 +10,11 @@ django-nopassword settings
 
     Defines how long a login code is valid in seconds.
 
+.. attribute:: NOPASSWORD_NAMESPACE
+
+    Defines the namespace for the urls, this must match the namespace of the include of
+    nopassword.urls. Default is 'nopassword'.
+
 .. attribute:: NOPASSWORD_HIDE_USERNAME
 
     If set to True, the login url will not contain the username.
@@ -37,7 +42,7 @@ django-nopassword settings
 .. attribute:: NOPASSWORD_TWILIO_AUTH_TOKEN
 
     Account secret for Twilio
-    
+
 .. attribute:: NOPASSWORD_NUMERIC_CODES
 
     A boolean flag if set to True, codes will contain numeric characters only (0-9). Default: False

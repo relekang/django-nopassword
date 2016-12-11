@@ -31,7 +31,7 @@ Add urls to your *urls.py*
 ```python
 urlpatterns = patterns('',
     ...
-    url(r'^accounts/', include('nopassword.urls'), namespace='nopassword'),
+    url(r'^accounts/', include('nopassword.urls', namespace='nopassword')),
     ...
 )
 ```

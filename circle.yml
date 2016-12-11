@@ -1,16 +1,11 @@
 machine:
   python:
-    version:
-      - 3.5.2
-      - 2.7.12
+    version: 3.5.2
 test:
   override:
     - echo 'USE_SQLITE=True' > tests/local.py
     - tox -e flake8
     - tox -e isort
-    - tox -e py2-django1_8
-    - tox -e py2-django1_9
-    - tox -e py2-django1_10
     - tox -e py3-django1_8
     - tox -e py3-django1_9
     - tox -e py3-django1_10

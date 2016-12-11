@@ -1,0 +1,10 @@
+test:
+  override:
+    - echo 'USE_SQLITE=True' > tests/local.py
+    - tox -e flake8
+    - tox -e isort
+    - tox -e py2-django18
+    - tox -e py2-django19
+    - tox -e py3-django18
+    - tox -e py3-django19
+    - tox -e coverage

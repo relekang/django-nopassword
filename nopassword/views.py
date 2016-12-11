@@ -53,6 +53,6 @@ def login_with_code_and_username(request, username, login_code):
 def logout(request, redirect_to=None):
     auth_logout(request)
     if redirect_to is None:
-        return redirect('login')
+        return redirect('{0}:login'.format(getattr(settings, 'NOPASSWORD_NAMESPACE', 'nopassword')))
     else:
         return redirect(redirect_to)

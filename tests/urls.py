@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 
-urlpatterns = patterns(
-    '',
-    url(r'^accounts/', include('nopassword.urls')),
-)
+urlpatterns = [
+    url(r'^accounts/', include('nopassword.urls', namespace='nopassword')),
+]

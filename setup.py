@@ -39,10 +39,10 @@ setup(
     long_description=_read_long_description(),
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_require=[
-        'django>=1.4',
+        'django>=1.8',
     ],
     tests_require=[
-        'django>=1.4',
+        'django>=1.8',
         'twilio==4.4.0',
         'mock>=1.0'
     ],
@@ -52,8 +52,7 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Framework :: Django",
         "Environment :: Web Environment",

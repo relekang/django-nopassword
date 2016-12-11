@@ -1,10 +1,5 @@
 # django-nopassword
-[![Build status](https://ci.frigg.io/badges/relekang/django-nopassword/)](https://ci.frigg.io/relekang/django-nopassword/)
-[![PyPi version](https://pypip.in/v/django-nopassword/badge.png)](https://crate.io/packages/django-nopassword/)
-[![Wheel Status](https://pypip.in/wheel/django-nopassword/badge.svg)](https://pypi.python.org/pypi/django-nopassword/)
-[![Downloads](https://pypip.in/download/django-nopassword/badge.svg)](https://pypi.python.org/pypi/django-nopassword/)
-[![Requirements Status](https://requires.io/github/relekang/django-nopassword/requirements.svg?branch=master)](https://requires.io/github/relekang/django-nopassword/requirements/?branch=master)
-[![License](https://pypip.in/license/django-nopassword/badge.svg)](https://pypi.python.org/pypi/django-nopassword/)
+[![CircleCI](https://circleci.com/gh/relekang/django-nopassword.svg?style=svg)](https://circleci.com/gh/relekang/django-nopassword)
 
 This project was originally inspired by [Is it time for password-less login?](http://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login) by [Ben Brown](http://twitter.com/benbrown)
 

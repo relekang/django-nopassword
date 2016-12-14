@@ -16,7 +16,7 @@ class AuthenticationForm(forms.Form):
 
     error_messages = {
         'invalid_login': _("Please enter a correct username. "
-                           "Note that both fields are case-sensitive."),
+                           "Note that it is case-sensitive."),
         'no_cookies': _("Your Web browser doesn't appear to have cookies "
                         "enabled. Cookies are required for logging in."),
         'inactive': _("This account is inactive."),

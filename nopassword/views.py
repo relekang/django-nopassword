@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import authenticate
 from django.contrib.auth.views import login as django_login
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render

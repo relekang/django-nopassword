@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('timestamp', models.DateTimeField(editable=False)),
                 ('next', models.TextField(blank=True, editable=False)),
                 ('user', models.ForeignKey(related_name='login_codes', verbose_name='user',
-                 to=settings.AUTH_USER_MODEL, editable=False)),
+                 to=settings.AUTH_USER_MODEL, editable=False, on_delete=models.CASCADE)),
             ],
             options={
             },

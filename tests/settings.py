@@ -1,5 +1,7 @@
 # -*- coding: utf8 -*-
 
+import django
+
 DEBUG = False
 USE_SQLITE = False
 
@@ -62,13 +64,16 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
+
+if django.VERSION < (1, 10):
+    MIDDLEWARE_CLASSES = MIDDLEWARE
 
 ROOT_URLCONF = 'tests.urls'
 

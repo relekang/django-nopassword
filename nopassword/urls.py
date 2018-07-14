@@ -3,6 +3,7 @@ from django.conf.urls import url
 
 from nopassword import views
 
+app_name = 'nopassword'
 urlpatterns = [
     url(
         r'^login/$',

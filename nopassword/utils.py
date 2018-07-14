@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 import django
 from django.conf import settings
-from django.utils.functional import allow_lazy
+
+if django.VERSION >= (2, 0):
+    from django.utils.functional import keep_lazy
+
+    def allow_lazy(func, *resultclasses):
+        return keep_lazy(*resultclasses)(func)
+
+else:
+    from django.utils.functional import allow_lazy
 
 if django.VERSION >= (1, 5):
     from django.contrib.auth import get_user_model

@@ -3,19 +3,24 @@ import hashlib
 import os
 from datetime import datetime
 
+import django
 from django.conf import settings
 from django.contrib.auth import get_backends
-from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from .utils import AUTH_USER_MODEL, get_username
 
+if django.VERSION >= (2, 0):
+    from django.urls import reverse_lazy
+else:
+    from django.core.urlresolvers import reverse_lazy
+
 
 class LoginCode(models.Model):
     user = models.ForeignKey(AUTH_USER_MODEL, related_name='login_codes',
-                             editable=False, verbose_name=_('user'))
+                             editable=False, verbose_name=_('user'), on_delete=models.CASCADE)
     code = models.CharField(max_length=20, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)
     next = models.TextField(editable=False, blank=True)

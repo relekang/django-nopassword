@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+
     'nopassword',
     'tests',
 ]
@@ -78,3 +81,10 @@ if django.VERSION < (1, 10):
 ROOT_URLCONF = 'tests.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}

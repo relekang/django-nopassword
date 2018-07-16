@@ -39,10 +39,13 @@ setup(
     long_description=_read_long_description(),
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_requires=[
-        'django>=1.8',
+        'django>=1.11',
     ],
+    extras_require={
+        'rest': ['djangorestframework>=3.1.3'],
+    },
     tests_require=[
-        'django>=1.8',
+        'django>=1.11',
         'twilio==4.4.0',
         'mock>=1.0'
     ],

@@ -3,7 +3,6 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 
-from .models import LoginCode
 from .utils import get_username_field
 
 
@@ -30,32 +29,28 @@ class AuthenticationForm(forms.Form):
         running this validation.
         """
         self.request = request
-        self.user_cache = None
+        self.login_code = None
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.fields['username'].label = _(get_username_field().capitalize())
 
-    def clean(self):
-        username = self.cleaned_data.get('username')
+    def clean_username(self):
+        username = self.cleaned_data['username']
 
-        if username:
-            self.user_cache = authenticate(**{get_username_field(): username})
-            if self.user_cache is None:
-                raise forms.ValidationError(
-                    self.error_messages['invalid_login'])
-            elif not isinstance(self.user_cache, LoginCode) and \
-                    not self.user_cache.is_active:
-                raise forms.ValidationError(self.error_messages['inactive'])
+        self.login_code = authenticate(**{get_username_field(): username})
+
+        if self.login_code is None:
+            raise forms.ValidationError(self.error_messages['invalid_login'])
+
+        return username
+
+    def clean(self):
         self.check_for_test_cookie()
-        return self.cleaned_data
 
     def check_for_test_cookie(self):
         if self.request and not self.request.session.test_cookie_worked():
             raise forms.ValidationError(self.error_messages['no_cookies'])
 
-    def get_user_id(self):
-        if self.user_cache:
-            return self.user_cache.id
-        return None
-
-    def get_user(self):
-        return self.user_cache
+    def save(self, request):
+        self.login_code.next = request.GET.get('next')
+        self.login_code.save()
+        self.login_code.send_login_code(secure=request.is_secure(), host=request.get_host())

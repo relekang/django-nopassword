@@ -16,15 +16,7 @@ def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            code = LoginCode.objects.filter(**{
-                'user__%s' % get_username_field(): request.POST.get('username')
-            })[0]
-            code.next = request.GET.get('next')
-            code.save()
-            code.send_login_code(
-                secure=request.is_secure(),
-                host=request.get_host(),
-            )
+            form.save(request=request)
             return render(request, 'registration/sent_mail.html')
 
     return django_login(request, authentication_form=AuthenticationForm)

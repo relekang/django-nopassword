@@ -1,12 +1,11 @@
 # -*- coding: utf8 -*-
 import time
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from nopassword.models import LoginCode
-from nopassword.utils import get_user_model
 
 
 class TestLoginCodes(TestCase):

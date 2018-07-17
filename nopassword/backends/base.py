@@ -2,11 +2,11 @@
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import FieldError
 
 from nopassword.models import LoginCode
-from nopassword.utils import get_user_model
 
 
 class NoPasswordBackend(ModelBackend):

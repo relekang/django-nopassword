@@ -3,29 +3,22 @@ import hashlib
 import os
 from datetime import datetime
 
-import django
 from django.conf import settings
 from django.contrib.auth import get_backends
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from .utils import AUTH_USER_MODEL, get_username
-
-if django.VERSION >= (2, 0):
-    from django.urls import reverse_lazy
-else:
-    from django.core.urlresolvers import reverse_lazy
-
 
 class LoginCode(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, related_name='login_codes',
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='login_codes',
                              editable=False, verbose_name=_('user'), on_delete=models.CASCADE)
     code = models.CharField(max_length=20, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)
     next = models.TextField(editable=False, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s - %s" % (self.user, self.timestamp)
 
     def save(self, *args, **kwargs):
@@ -40,7 +33,7 @@ class LoginCode(models.Model):
 
     def login_url(self, secure=False, host=None):
         url_namespace = getattr(settings, 'NOPASSWORD_NAMESPACE', 'nopassword')
-        username = get_username(self.user)
+        username = self.user.get_username()
         host = host or getattr(settings, 'SERVER_URL', None) or 'example.com'
         if getattr(settings, 'NOPASSWORD_HIDE_USERNAME', False):
             view = reverse_lazy(

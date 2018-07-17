@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import login as django_login
@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AuthenticationForm
 from .models import LoginCode
-from .utils import get_username, get_username_field
 
 
 def login(request):
@@ -24,7 +23,7 @@ def login(request):
 
 def login_with_code(request, login_code):
     code = get_object_or_404(LoginCode.objects.select_related('user'), code=login_code)
-    return login_with_code_and_username(request, username=get_username(code.user),
+    return login_with_code_and_username(request, username=code.user.get_username(),
                                         login_code=login_code)
 
 
@@ -33,7 +32,7 @@ def login_with_code_and_username(request, username, login_code):
     login_with_post = getattr(settings, 'NOPASSWORD_POST_REDIRECT', True)
 
     if request.method == 'POST' or not login_with_post:
-        user = authenticate(**{get_username_field(): username, 'code': login_code})
+        user = authenticate(**{get_user_model().USERNAME_FIELD: username, 'code': login_code})
         if user is None:
             raise Http404
         user = auth_login(request, user)

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import exceptions, serializers
 from rest_framework.authtoken.models import Token
 
 from nopassword.forms import AuthenticationForm
 from nopassword.models import LoginCode
-from nopassword.utils import get_username, get_username_field
 
 
 class LoginCodeRequestSerializer(serializers.Serializer):
@@ -44,8 +43,8 @@ class LoginSerializer(serializers.Serializer):
         code = data.get('code')
 
         if code:
-            username = get_username(code.user)
-            user = authenticate(**{get_username_field(): username, 'code': code.code})
+            username = code.user.get_username()
+            user = authenticate(**{get_user_model().USERNAME_FIELD: username, 'code': code.code})
 
             if not user:
                 raise exceptions.ValidationError({

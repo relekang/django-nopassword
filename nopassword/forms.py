@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import ugettext_lazy as _
-
-from .utils import get_username_field
 
 
 class AuthenticationForm(forms.Form):
@@ -31,12 +29,12 @@ class AuthenticationForm(forms.Form):
         self.request = request
         self.login_code = None
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].label = _(get_username_field().capitalize())
+        self.fields['username'].label = _(get_user_model().USERNAME_FIELD.capitalize())
 
     def clean_username(self):
         username = self.cleaned_data['username']
 
-        self.login_code = authenticate(**{get_username_field(): username})
+        self.login_code = authenticate(**{get_user_model().USERNAME_FIELD: username})
 
         if self.login_code is None:
             raise forms.ValidationError(self.error_messages['invalid_login'])

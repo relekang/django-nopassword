@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.authtoken.models import Token
 
 from nopassword.models import LoginCode
-from nopassword.utils import get_user_model
 
 
 class TestRestViews(TestCase):

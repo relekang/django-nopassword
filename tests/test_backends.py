@@ -2,7 +2,7 @@
 from unittest import skipIf
 
 import django
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.test import TestCase
 from django.test.utils import mail, override_settings
 from mock import MagicMock, patch
@@ -11,7 +11,6 @@ from nopassword.backends.base import NoPasswordBackend
 from nopassword.backends.email import EmailBackend
 from nopassword.backends.sms import TwilioBackend
 from nopassword.models import LoginCode
-from nopassword.utils import get_user_model
 
 
 class AuthenticationBackendTests(TestCase):

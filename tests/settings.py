@@ -32,6 +32,7 @@ AUTH_USER_MODEL = 'tests.CustomUser'
 NOPASSWORD_LOGIN_CODE_TIMEOUT = 900
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -62,7 +63,9 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            # ... some options here ...
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+            ],
         },
     },
 ]

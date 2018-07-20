@@ -22,12 +22,7 @@ class TestLoginCodes(TestCase):
         self.assertEqual(len(self.code.code), 20)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
         self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
-
-        authenticate(username=self.user.username)
-        self.assertEqual(LoginCode.objects.filter(user=self.user).count(), 1)
-
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
-        self.assertIsNone(authenticate(username=self.inactive_user.username))
 
     @override_settings(NOPASSWORD_CODE_LENGTH=8)
     def test_shorter_code(self):

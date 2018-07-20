@@ -47,9 +47,6 @@ class TwilioBackendTests(TestCase):
         _, kwargs = self.backend.twilio_client.messages.create.call_args
         self.assertIn(self.code.login_url(secure=False), kwargs.get('body'))
 
-        authenticate(username=self.user.username)
-        self.assertEqual(LoginCode.objects.filter(user=self.user).count(), 1)
-
     @patch('nopassword.backends.sms.TwilioRestClient')
     def test_twilio_backend_with_https(self, mock_object):
         self.backend = TwilioBackend()
@@ -96,21 +93,7 @@ class EmailBackendTests(TestCase):
 
 
 class TestBackendUtils(TestCase):
-    def setUp(self):
-        self.user = get_user_model().objects.create(username='test_user')
-        self.inactive_user = get_user_model().objects.create(username='inactive', is_active=False)
-        self.backend = NoPasswordBackend()
-
-    def tearDown(self):
-        self.user.delete()
-        self.inactive_user.delete()
-
-    def test_verify_user(self):
-        self.assertTrue(self.backend.verify_user(self.user))
-        self.assertFalse(self.backend.verify_user(self.inactive_user))
 
     def test_send_login_code(self):
-        self.assertRaises(NotImplementedError,
-                          self.backend.send_login_code,
-                          code=None,
-                          secure=False)
+        backend = NoPasswordBackend()
+        self.assertRaises(NotImplementedError, backend.send_login_code, code=None, secure=False)

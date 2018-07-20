@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
+
+from nopassword.models import LoginCode
 
 
 class AuthenticationForm(forms.Form):
@@ -40,10 +42,15 @@ class AuthenticationForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
 
-        self.login_code = authenticate(**{get_user_model().USERNAME_FIELD: username})
-
-        if self.login_code is None:
+        try:
+            user = get_user_model()._default_manager.get_by_natural_key(username)
+        except get_user_model().DoesNotExist:
             raise forms.ValidationError(self.error_messages['invalid_login'])
+
+        if not user.is_active:
+            raise forms.ValidationError(self.error_messages['invalid_login'])
+
+        self.login_code = LoginCode.create_code_for_user(user)
 
         return username
 

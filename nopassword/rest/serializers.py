@@ -9,9 +9,14 @@ from nopassword.models import LoginCode
 
 
 class LoginCodeRequestSerializer(serializers.Serializer):
-    username = serializers.CharField(label=_('Username'), max_length=30)
+    username = serializers.CharField()
 
     login_code_request_form_class = AuthenticationForm
+
+    def __init__(self, *args, **kwargs):
+        super(LoginCodeRequestSerializer, self).__init__(*args, **kwargs)
+        self.username_field = get_user_model()._meta.get_field(get_user_model().USERNAME_FIELD)
+        self.fields['username'].max_length = self.username_field.max_length or 254
 
     def validate(self, data):
         username = data.get('username')

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -9,7 +10,7 @@ class AuthenticationForm(forms.Form):
     Base class for authenticating users. Extend this to get a form that accepts
     username logins.
     """
-    username = forms.CharField(label=_("Username"), max_length=30)
+    username = forms.CharField()
 
     error_messages = {
         'invalid_login': _("Please enter a correct username. "
@@ -26,10 +27,15 @@ class AuthenticationForm(forms.Form):
         cookie with the key TEST_COOKIE_NAME and value TEST_COOKIE_VALUE before
         running this validation.
         """
+        super(AuthenticationForm, self).__init__(*args, **kwargs)
+
         self.request = request
         self.login_code = None
-        super(AuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].label = _(get_user_model().USERNAME_FIELD.capitalize())
+        self.username_field = get_user_model()._meta.get_field(get_user_model().USERNAME_FIELD)
+        self.fields['username'].max_length = self.username_field.max_length or 254
+
+        if self.fields['username'].label is None:
+            self.fields['username'].label = capfirst(self.username_field.verbose_name)
 
     def clean_username(self):
         username = self.cleaned_data['username']

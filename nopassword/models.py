@@ -5,6 +5,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_backends
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -57,6 +58,12 @@ class LoginCode(models.Model):
         for backend in get_backends():
             if hasattr(backend, 'send_login_code'):
                 backend.send_login_code(self, secure=secure, host=host, **kwargs)
+                break
+        else:
+            raise ImproperlyConfigured(
+                'Please add a nopassword authentication backend to settings, '
+                'e.g. `nopassword.backends.EmailBackend`'
+            )
 
     @classmethod
     def create_code_for_user(cls, user, next=None):

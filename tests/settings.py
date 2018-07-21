@@ -3,29 +3,13 @@
 import django
 
 DEBUG = False
-USE_SQLITE = False
 
-try:
-    from .local import USE_SQLITE
-except ImportError:
-    pass
-
-if USE_SQLITE:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
-
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'django_nopassword',
-        }
-    }
-
+}
 
 AUTH_USER_MODEL = 'tests.CustomUser'
 

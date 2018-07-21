@@ -5,14 +5,8 @@
     <body>
         <form method="post">
             {% csrf_token %}
-
-	    <p>
-                {% trans "Please enter the login code that was sent to you." %}
-	    </p>
-
             {{ form }}
-
-            <button>{% trans "Login" %}</button>
+	    <button>{% trans "Submit" %}</button>
         </form>
     </body>
 </html>

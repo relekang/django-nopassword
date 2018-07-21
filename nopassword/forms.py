@@ -1,43 +1,29 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth import get_user_model
-from django.utils.text import capfirst
+from django.conf import settings
+from django.contrib.auth import authenticate, get_backends, get_user_model
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ImproperlyConfigured
+from django.shortcuts import resolve_url
 from django.utils.translation import ugettext_lazy as _
 
-from nopassword.models import LoginCode
+from nopassword import models
 
 
-class AuthenticationForm(forms.Form):
-    """
-    Base class for authenticating users. Extend this to get a form that accepts
-    username logins.
-    """
-    username = forms.CharField()
-
+class LoginCodeRequestForm(forms.Form):
     error_messages = {
-        'invalid_login': _("Please enter a correct username. "
-                           "Note that it is case-sensitive."),
-        'no_cookies': _("Your Web browser doesn't appear to have cookies "
-                        "enabled. Cookies are required for logging in."),
+        'invalid_username': _(
+            "Please enter a correct %(username)s. "
+            "Note that it is case-sensitive."
+        ),
         'inactive': _("This account is inactive."),
     }
 
-    def __init__(self, request=None, *args, **kwargs):
-        """
-        If request is passed in, the form will validate that cookies are
-        enabled. Note that the request (a HttpRequest object) must have set a
-        cookie with the key TEST_COOKIE_NAME and value TEST_COOKIE_VALUE before
-        running this validation.
-        """
-        super(AuthenticationForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(LoginCodeRequestForm, self).__init__(*args, **kwargs)
 
-        self.request = request
-        self.login_code = None
         self.username_field = get_user_model()._meta.get_field(get_user_model().USERNAME_FIELD)
-        self.fields['username'].max_length = self.username_field.max_length or 254
-
-        if self.fields['username'].label is None:
-            self.fields['username'].label = capfirst(self.username_field.verbose_name)
+        self.fields['username'] = self.username_field.formfield()
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -45,23 +31,103 @@ class AuthenticationForm(forms.Form):
         try:
             user = get_user_model()._default_manager.get_by_natural_key(username)
         except get_user_model().DoesNotExist:
-            raise forms.ValidationError(self.error_messages['invalid_login'])
+            raise forms.ValidationError(
+                self.error_messages['invalid_username'],
+                code='invalid_username',
+                params={'username': self.username_field.verbose_name},
+            )
 
         if not user.is_active:
-            raise forms.ValidationError(self.error_messages['invalid_login'])
+            raise forms.ValidationError(
+                self.error_messages['inactive'],
+                code='inactive',
+            )
 
-        self.login_code = LoginCode.create_code_for_user(user)
+        self.cleaned_data['login_code'] = models.LoginCode.create_code_for_user(user)
 
         return username
 
-    def clean(self):
-        self.check_for_test_cookie()
+    def save(self, request, login_url=None, domain_override=None, extra_context=None):
+        login_code = self.cleaned_data['login_code']
+        login_code.next = request.GET.get('next')
+        login_code.save()
 
-    def check_for_test_cookie(self):
-        if self.request and not self.request.session.test_cookie_worked():
-            raise forms.ValidationError(self.error_messages['no_cookies'])
+        if not domain_override:
+            current_site = get_current_site(request)
+            site_name = current_site.name
+            domain = current_site.domain
+        else:
+            site_name = domain = domain_override
 
-    def save(self, request):
-        self.login_code.next = request.GET.get('next')
-        self.login_code.save()
-        self.login_code.send_login_code(secure=request.is_secure(), host=request.get_host())
+        url = '{}://{}{}?code={}&next={}'.format(
+            'https' if request.is_secure() else 'http',
+            domain,
+            resolve_url(login_url or settings.LOGIN_URL),
+            login_code.code,
+            login_code.next,
+        )
+
+        context = {
+            'domain': domain,
+            'site_name': site_name,
+            'code': login_code.code,
+            'url': url,
+        }
+
+        if extra_context:
+            context.update(extra_context)
+
+        self.send_login_code(login_code, context)
+
+    def send_login_code(self, login_code, context, **kwargs):
+        for backend in get_backends():
+            if hasattr(backend, 'send_login_code'):
+                backend.send_login_code(login_code, context, **kwargs)
+                break
+        else:
+            raise ImproperlyConfigured(
+                'Please add a nopassword authentication backend to settings, '
+                'e.g. `nopassword.backends.EmailBackend`'
+            )
+
+
+class LoginForm(forms.Form):
+    code = forms.ModelChoiceField(
+        label=_('Login code'),
+        queryset=models.LoginCode.objects.select_related('user'),
+        to_field_name='code',
+        widget=forms.TextInput,
+        error_messages={
+            'invalid_choice': _('Login code is invalid. It might have expired.'),
+        },
+    )
+
+    error_messages = {
+        'invalid_code': _("Unable to log in with provided login code."),
+    }
+
+    def __init__(self, request=None, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+        self.request = request
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+        username = code.user.get_username()
+        user = authenticate(self.request, **{
+            get_user_model().USERNAME_FIELD: username,
+            'code': code.code,
+        })
+
+        if not user:
+            raise forms.ValidationError(
+                self.error_messages['invalid_code'],
+                code='invalid_code',
+            )
+
+        self.cleaned_data['user'] = user
+
+        return code
+
+    def get_user(self):
+        return self.cleaned_data.get('user')

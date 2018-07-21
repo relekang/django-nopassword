@@ -1,64 +1,42 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth import authenticate, get_user_model
-from django.utils.translation import ugettext_lazy as _
-from rest_framework import exceptions, serializers
+from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from nopassword.forms import AuthenticationForm
-from nopassword.models import LoginCode
+from nopassword import forms
 
 
 class LoginCodeRequestSerializer(serializers.Serializer):
     username = serializers.CharField()
 
-    login_code_request_form_class = AuthenticationForm
-
-    def __init__(self, *args, **kwargs):
-        super(LoginCodeRequestSerializer, self).__init__(*args, **kwargs)
-        self.username_field = get_user_model()._meta.get_field(get_user_model().USERNAME_FIELD)
-        self.fields['username'].max_length = self.username_field.max_length or 254
+    form_class = forms.LoginCodeRequestForm
 
     def validate(self, data):
-        username = data.get('username')
+        self.form = self.form_class(data=self.initial_data)
 
-        if username:
-            self.login_code_request_form = self.login_code_request_form_class(
-                data=self.initial_data,
-            )
+        if not self.form.is_valid():
+            raise serializers.ValidationError(self.form.errors)
 
-            if not self.login_code_request_form.is_valid():
-                raise serializers.ValidationError(self.login_code_request_form.errors)
-
-        return data
+        return self.form.cleaned_data
 
     def save(self):
         request = self.context.get('request')
-        self.login_code_request_form.save(request=request)
+        self.form.save(request=request)
 
 
 class LoginSerializer(serializers.Serializer):
-    code = serializers.SlugRelatedField(
-        label=_('Login code'),
-        queryset=LoginCode.objects.select_related('user'),
-        slug_field='code',
-        style={'base_template': 'input.html'},
-    )
+    code = serializers.CharField()
+
+    form_class = forms.LoginForm
 
     def validate(self, data):
-        code = data.get('code')
+        request = self.context.get('request')
 
-        if code:
-            username = code.user.get_username()
-            user = authenticate(**{get_user_model().USERNAME_FIELD: username, 'code': code.code})
+        self.form = self.form_class(data=self.initial_data, request=request)
 
-            if not user:
-                raise exceptions.ValidationError({
-                    'code': _('Unable to log in with provided credentials.'),
-                })
+        if not self.form.is_valid():
+            raise serializers.ValidationError(self.form.errors)
 
-            data['user'] = user
-
-        return data
+        return self.form.cleaned_data
 
 
 class TokenSerializer(serializers.ModelSerializer):

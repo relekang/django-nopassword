@@ -3,5 +3,5 @@ from .email import EmailBackend  # noqa
 
 try:
     from .sms import TwilioBackend  # noqa
-except ImportError:
+except ImportError:  # pragma: no cover
     pass

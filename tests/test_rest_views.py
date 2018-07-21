@@ -23,7 +23,7 @@ class TestRestViews(TestCase):
         self.assertIsNotNone(login_code)
 
     def test_request_login_code_missing_username(self):
-        response = self.client.post('/accounts-rest/login-code/request/', {})
+        response = self.client.post('/accounts-rest/login-code/request/')
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
@@ -37,7 +37,7 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'username': ['Please enter a correct username. Note that it is case-sensitive.'],
+            'username': ['Please enter a correct userid. Note that it is case-sensitive.'],
         })
 
     def test_request_login_code_inactive_user(self):
@@ -50,7 +50,7 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'username': ['Please enter a correct username. Note that it is case-sensitive.'],
+            'username': ['This account is inactive.'],
         })
 
     def test_login(self):
@@ -69,7 +69,7 @@ class TestRestViews(TestCase):
         self.assertEqual(response.data['key'], token.key)
 
     def test_login_missing_code(self):
-        response = self.client.post('/accounts-rest/login/', {})
+        response = self.client.post('/accounts-rest/login/')
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
@@ -83,7 +83,7 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'code': ['Object with code=unknown does not exist.'],
+            'code': ['Login code is invalid. It might have expired.'],
         })
 
     def test_login_inactive_user(self):
@@ -98,7 +98,7 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'code': ['Unable to log in with provided credentials.'],
+            'code': ['Unable to log in with provided login code.'],
         })
 
     def test_logout(self):

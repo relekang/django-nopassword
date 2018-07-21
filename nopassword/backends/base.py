@@ -35,5 +35,5 @@ class NoPasswordBackend(ModelBackend):
         except (get_user_model().DoesNotExist, LoginCode.DoesNotExist):
             return
 
-    def send_login_code(self, code, secure=False, host=None, **kwargs):
+    def send_login_code(self, code, context, **kwargs):
         raise NotImplementedError

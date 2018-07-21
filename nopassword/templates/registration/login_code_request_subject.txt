@@ -1,0 +1,3 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}Login code request on {{ site_name }}{% endblocktrans %}
+{% endautoescape %}

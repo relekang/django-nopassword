@@ -3,26 +3,12 @@ from django.conf.urls import url
 
 from nopassword import views
 
-app_name = 'nopassword'
 urlpatterns = [
     url(
-        r'^login/$',
-        views.login,
-        name='login'
+        r'^login-code/request/$',
+        views.LoginCodeRequestView.as_view(),
+        name='login_code_request',
     ),
-    url(
-        r'^login-code/(?P<login_code>[a-zA-Z0-9]+)/$',
-        views.login_with_code,
-        name='login_with_code'
-    ),
-    url(
-        r'^login-code/(?P<username>[a-zA-Z0-9_@\.\+-]+)/(?P<login_code>[a-zA-Z0-9]+)/$',
-        views.login_with_code_and_username,
-        name='login_with_code_and_username'
-    ),
-    url(
-        r'^logout/$',
-        views.logout,
-        name='logout'
-    ),
+    url(r'^login/$', views.LoginView.as_view(), name='login'),
+    url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
 ]

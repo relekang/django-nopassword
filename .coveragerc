@@ -1,6 +1,7 @@
 [report]
 show_missing = True
 exclude_lines =
+    pragma: no cover
     raise NotImplementedError
     if __name__ == .__main__.:
     if settings.DEBUG:

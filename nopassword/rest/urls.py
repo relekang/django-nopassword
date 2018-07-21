@@ -3,7 +3,6 @@ from django.conf.urls import url
 
 from nopassword.rest import views
 
-app_name = 'nopassword'
 urlpatterns = [
     url(
         r'^login-code/request/$',

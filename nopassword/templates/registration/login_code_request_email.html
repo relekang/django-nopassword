@@ -1,0 +1,14 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}You're receiving this email because you requested a login code for your user account at {{ site_name }}.{% endblocktrans %}
+
+{% trans "Please enter the following code for sign in:" %}
+{{ code }}
+
+{% trans "You can also follow this link to sign in automatically:" %}
+{{ url }}
+
+{% trans "Thanks for using our site!" %}
+
+{% blocktrans %}The {{ site_name }} team{% endblocktrans %}
+
+{% endautoescape %}

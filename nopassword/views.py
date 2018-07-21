@@ -1,49 +1,48 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.views import login as django_login
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.views import LoginView as DjangoLoginView
+from django.contrib.auth.views import LogoutView as DjangoLogoutView
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic.edit import FormView
 
-from .forms import AuthenticationForm
-from .models import LoginCode
+from nopassword import forms
 
 
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            form.save(request=request)
-            return render(request, 'registration/sent_mail.html')
+class LoginCodeRequestView(FormView):
+    form_class = forms.LoginCodeRequestForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/login_code_request_form.html'
 
-    return django_login(request, authentication_form=AuthenticationForm)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginCodeRequestView, self).dispatch(request, *args, **kwargs)
 
-
-def login_with_code(request, login_code):
-    code = get_object_or_404(LoginCode.objects.select_related('user'), code=login_code)
-    return login_with_code_and_username(request, username=code.user.get_username(),
-                                        login_code=login_code)
+    def form_valid(self, form):
+        form.save(request=self.request)
+        return super(LoginCodeRequestView, self).form_valid(form)
 
 
-def login_with_code_and_username(request, username, login_code):
-    code = get_object_or_404(LoginCode, code=login_code)
-    login_with_post = getattr(settings, 'NOPASSWORD_POST_REDIRECT', True)
+class LoginView(DjangoLoginView):
+    form_class = forms.LoginForm
 
-    if request.method == 'POST' or not login_with_post:
-        user = authenticate(**{get_user_model().USERNAME_FIELD: username, 'code': login_code})
-        if user is None:
-            raise Http404
-        user = auth_login(request, user)
-        return redirect(code.next)
+    def get(self, request, *args, **kwargs):
+        if request.method == 'GET' and 'code' in self.request.GET:
+            return super(LoginView, self).post(request, *args, **kwargs)
+        return super(LoginView, self).get(request, *args, **kwargs)
 
-    return render(request, 'registration/login_submit.html')
+    def get_form_kwargs(self):
+        kwargs = super(LoginView, self).get_form_kwargs()
+
+        if self.request.method == 'GET' and 'code' in self.request.GET:
+            kwargs['data'] = self.request.GET
+
+        return kwargs
+
+    def get_redirect_url(self):
+        login_code = getattr(self.request.user, 'login_code', None)
+        return login_code.next if login_code else ''
 
 
-def logout(request, redirect_to=None):
-    auth_logout(request)
-    if redirect_to is None:
-        return redirect('{0}:login'.format(getattr(settings, 'NOPASSWORD_NAMESPACE', 'nopassword')))
-    else:
-        return redirect(redirect_to)
+class LogoutView(DjangoLogoutView):
+    pass

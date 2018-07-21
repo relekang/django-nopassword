@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _
 
-from .base import NoPasswordBackend
+from nopassword.backends.base import NoPasswordBackend
 
 
 class EmailBackend(NoPasswordBackend):
+    template_name = 'registration/login_code_request_email.html'
+    html_template_name = None
+    subject_template_name = 'registration/login_code_request_subject.txt'
+    from_email = None
 
-    def send_login_code(self, code, secure=False, host=None, **kwargs):
-        subject = getattr(settings, 'NOPASSWORD_LOGIN_EMAIL_SUBJECT', _('Login code'))
-        to_email = [code.user.email]
-        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'root@example.com')
+    def send_login_code(self, code, context, **kwargs):
+        to_email = code.user.email
+        subject = render_to_string(self.subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = render_to_string(self.template_name, context)
 
-        context = {'url': code.login_url(secure=secure, host=host), 'code': code}
-        text_content = render_to_string('registration/login_email.txt', context)
-        html_content = render_to_string('registration/login_email.html', context)
+        email_message = EmailMultiAlternatives(subject, body, self.from_email, [to_email])
 
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-        msg.attach_alternative(html_content, 'text/html')
-        msg.send()
+        if self.html_template_name is not None:
+            html_email = render_to_string(self.html_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
+
+        email_message.send()

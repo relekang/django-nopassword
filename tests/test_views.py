@@ -1,8 +1,6 @@
 # -*- coding: utf8 -*-
-from django.contrib.auth import SESSION_KEY, get_user_model
-from django.test import Client, TestCase
-from django.test.utils import override_settings
-from mock import patch
+from django.contrib.auth import get_user_model
+from django.test import TestCase
 
 from nopassword.models import LoginCode
 
@@ -10,83 +8,130 @@ from nopassword.models import LoginCode
 class TestViews(TestCase):
 
     def setUp(self):
-        self.c = Client()
         self.user = get_user_model().objects.create(username='user')
 
-    def tearDown(self):
-        self.user.delete()
+    def test_request_login_code(self):
+        response = self.client.post('/accounts/login-code/request/', {
+            'username': self.user.username,
+        })
 
-    def test_login(self):
-        response = self.c.get('/accounts/login/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], '/accounts/login/')
+
+        login_code = LoginCode.objects.filter(user=self.user).first()
+
+        self.assertIsNotNone(login_code)
+
+    def test_request_login_code_missing_username(self):
+        response = self.client.post('/accounts/login-code/request/')
+
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'username': ['This field is required.'],
+        })
 
-        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
-        self.assertEqual(login.status_code, 200)
+    def test_request_login_code_unknown_user(self):
+        response = self.client.post('/accounts/login-code/request/', {
+            'username': 'unknown',
+        })
 
-        login_with_code = self.c.get('/accounts/login-code/%s/%s/' % (self.user.username,
-                                                                      'wrongcode'))
-        self.assertEqual(login_with_code.status_code, 404)
-
-        login_url = '/accounts/login-code/%s/%s/' % (
-            self.user.username,
-            LoginCode.objects.all()[0].code
-        )
-        login_with_code = self.c.get(login_url)
-        self.assertEqual(login_with_code.status_code, 200)
-
-        login_post = self.c.post(login_url)
-        self.assertEqual(login_post.status_code, 302)
-        self.assertIn(SESSION_KEY, self.c.session)
-
-        logout = self.c.get('/accounts/logout/')
-        self.assertEqual(logout.status_code, 302)
-
-    @override_settings(NOPASSWORD_POST_REDIRECT=False)
-    def test_login_with_get(self):
-        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
-        self.assertEqual(login.status_code, 200)
-
-        login_url = '/accounts/login-code/%s/%s/' % (
-            self.user.username,
-            LoginCode.objects.all()[0].code
-        )
-        login_with_code = self.c.get(login_url)
-        self.assertEqual(login_with_code.status_code, 302)
-        self.assertIn(SESSION_KEY, self.c.session)
-
-    @override_settings(NOPASSWORD_HIDE_USERNAME=True)
-    def test_hide_username(self):
-        response = self.c.get('/accounts/login/')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'username': ['Please enter a correct userid. Note that it is case-sensitive.'],
+        })
 
-        login = self.c.post('/accounts/login/?next=/secret/', {'username': self.user.username})
-        self.assertEqual(login.status_code, 200)
+    def test_request_login_code_inactive_user(self):
+        self.user.is_active = False
+        self.user.save()
 
-        login_with_code = self.c.get('/accounts/login-code/%s/' % 'wrongcode')
-        self.assertEqual(login_with_code.status_code, 404)
+        response = self.client.post('/accounts/login-code/request/', {
+            'username': self.user.username,
+        })
 
-        code_url = '/accounts/login-code/%s/' % LoginCode.objects.all()[0].code
-        login_with_code = self.c.get(code_url)
-        self.assertEqual(login_with_code.status_code, 200)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'username': ['This account is inactive.'],
+        })
 
-        login_post = self.c.post(code_url)
-        self.assertEqual(login_post.status_code, 302)
+    def test_login_post(self):
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        logout = self.c.get('/accounts/logout/')
-        self.assertEqual(logout.status_code, 302)
+        response = self.client.post('/accounts/login/', {
+            'code': login_code.code,
+        })
 
-    @patch.object(LoginCode, 'send_login_code')
-    def test_https_request(self, mock_send_login_code):
-        login = self.c.post('/accounts/login/?next=/secret/',
-                            {'username': self.user.username},
-                            **{'wsgi.url_scheme': 'https'})
-        self.assertEqual(login.status_code, 200)
-        mock_send_login_code.assert_called_with(secure=True, host='testserver:80')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], '/accounts/profile/')
+        self.assertEqual(response.wsgi_request.user, self.user)
 
-    @patch.object(LoginCode, 'send_login_code')
-    def test_http_request(self, mock_send_login_code):
-        login = self.c.post('/accounts/login/?next=/secret/',
-                            {'username': self.user.username},
-                            **{'wsgi.url_scheme': 'http'})
-        self.assertEqual(login.status_code, 200)
-        mock_send_login_code.assert_called_with(secure=False, host='testserver')
+    def test_login_get(self):
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+
+        response = self.client.get('/accounts/login/', {
+            'code': login_code.code,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], '/accounts/profile/')
+        self.assertEqual(response.wsgi_request.user, self.user)
+
+    def test_login_missing_code_post(self):
+        response = self.client.post('/accounts/login/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'code': ['This field is required.'],
+        })
+
+    def test_login_missing_code_get(self):
+        response = self.client.get('/accounts/login/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['form'].is_bound)
+
+    def test_login_unknown_code(self):
+        response = self.client.post('/accounts/login/', {
+            'code': 'unknown',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'code': ['Login code is invalid. It might have expired.'],
+        })
+
+    def test_login_inactive_user(self):
+        self.user.is_active = False
+        self.user.save()
+
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+
+        response = self.client.post('/accounts/login/', {
+            'code': login_code.code,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].errors, {
+            'code': ['Unable to log in with provided login code.'],
+        })
+
+    def test_logout_post(self):
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+
+        self.client.login(username=self.user.username, code=login_code.code)
+
+        response = self.client.post('/accounts/logout/?next=/accounts/login/')
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], '/accounts/login/')
+        self.assertTrue(response.wsgi_request.user.is_anonymous)
+
+    def test_logout_get(self):
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+
+        self.client.login(username=self.user.username, code=login_code.code)
+
+        response = self.client.post('/accounts/logout/?next=/accounts/login/')
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'], '/accounts/login/')
+        self.assertTrue(response.wsgi_request.user.is_anonymous)

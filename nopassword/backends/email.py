@@ -6,7 +6,7 @@ from nopassword.backends.base import NoPasswordBackend
 
 
 class EmailBackend(NoPasswordBackend):
-    template_name = 'registration/login_code_request_email.html'
+    template_name = 'registration/login_code_request_email.txt'
     html_template_name = None
     subject_template_name = 'registration/login_code_request_subject.txt'
     from_email = None

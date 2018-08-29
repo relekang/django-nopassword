@@ -22,7 +22,7 @@ class TwilioBackend(NoPasswordBackend):
         Send a login code via SMS
         """
         from_number = self.from_number or getattr(settings, 'DEFAULT_FROM_NUMBER')
-        sms_content = render_to_string('registration/login_sms.txt', context)
+        sms_content = render_to_string(self.template_name, context)
 
         self.twilio_client.messages.create(
             to=code.user.phone_number,

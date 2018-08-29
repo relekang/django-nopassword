@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.mail import EmailMultiAlternatives
+from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 
 from nopassword.backends.base import NoPasswordBackend
@@ -7,7 +8,7 @@ from nopassword.backends.base import NoPasswordBackend
 
 class EmailBackend(NoPasswordBackend):
     template_name = 'registration/login_code_request_email.txt'
-    html_template_name = None
+    html_template_name = 'registration/login_code_request_email.html'
     subject_template_name = 'registration/login_code_request_subject.txt'
     from_email = None
 
@@ -20,8 +21,10 @@ class EmailBackend(NoPasswordBackend):
 
         email_message = EmailMultiAlternatives(subject, body, self.from_email, [to_email])
 
-        if self.html_template_name is not None:
+        try:
             html_email = render_to_string(self.html_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
+        except TemplateDoesNotExist:
+            pass
 
         email_message.send()

@@ -25,10 +25,13 @@ class NoPasswordBackend(ModelBackend):
 
             timeout = getattr(settings, 'NOPASSWORD_LOGIN_CODE_TIMEOUT', 900)
             timestamp = datetime.now() - timedelta(seconds=timeout)
-            login_code = LoginCode.objects.get(user=user, code=code, timestamp__gt=timestamp)
-            user = login_code.user
-            user.code = login_code
-            login_code.delete()
+
+            # We don't delete the login code when authenticating,
+            # as that is done during validation of the login form
+            # and validation should not have any side effects.
+            # It is the responsibility of the view/form to delete the token
+            # as soon as the login was successfull.
+            user.login_code = LoginCode.objects.get(user=user, code=code, timestamp__gt=timestamp)
 
             return user
 

@@ -19,7 +19,6 @@ class TestLoginCodes(TestCase):
     def test_login_backend(self):
         self.assertEqual(len(self.code.code), 20)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
-        self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
 
     @override_settings(NOPASSWORD_CODE_LENGTH=8)

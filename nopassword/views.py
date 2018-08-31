@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.contrib.auth.views import LogoutView as DjangoLogoutView
 from django.urls import reverse_lazy
@@ -27,9 +28,13 @@ class LoginView(DjangoLoginView):
     form_class = forms.LoginForm
 
     def get(self, request, *args, **kwargs):
-        if request.method == 'GET' and 'code' in self.request.GET:
+        if 'code' in self.request.GET and getattr(settings, 'NOPASSWORD_LOGIN_ON_GET', False):
             return super(LoginView, self).post(request, *args, **kwargs)
         return super(LoginView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        return super(LoginView, self).form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super(LoginView, self).get_form_kwargs()

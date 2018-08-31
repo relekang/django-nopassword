@@ -30,7 +30,6 @@ class TwilioBackendTests(TestCase):
         self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
         self.assertEqual(len(self.code.code), 20)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
-        self.assertEqual(LoginCode.objects.filter(user=self.user, code=self.code.code).count(), 0)
 
     @patch('nopassword.backends.sms.TwilioRestClient')
     def test_twilio_backend(self, mock_object):

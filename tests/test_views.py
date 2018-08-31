@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from nopassword.models import LoginCode
 
@@ -63,8 +63,22 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'], '/accounts/profile/')
         self.assertEqual(response.wsgi_request.user, self.user)
+        self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 
     def test_login_get(self):
+        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+
+        response = self.client.get('/accounts/login/', {
+            'code': login_code.code,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].cleaned_data['code'], login_code)
+        self.assertTrue(response.wsgi_request.user.is_anonymous)
+        self.assertTrue(LoginCode.objects.filter(pk=login_code.pk).exists())
+
+    @override_settings(NOPASSWORD_LOGIN_ON_GET=True)
+    def test_login_get_non_idempotent(self):
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
         response = self.client.get('/accounts/login/', {
@@ -74,6 +88,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'], '/accounts/profile/')
         self.assertEqual(response.wsgi_request.user, self.user)
+        self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 
     def test_login_missing_code_post(self):
         response = self.client.post('/accounts/login/')

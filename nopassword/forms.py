@@ -131,3 +131,6 @@ class LoginForm(forms.Form):
 
     def get_user(self):
         return self.cleaned_data.get('user')
+
+    def save(self):
+        self.cleaned_data['code'].delete()

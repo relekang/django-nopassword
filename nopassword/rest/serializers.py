@@ -38,6 +38,9 @@ class LoginSerializer(serializers.Serializer):
 
         return self.form.cleaned_data
 
+    def save(self):
+        self.form.save()
+
 
 class TokenSerializer(serializers.ModelSerializer):
 

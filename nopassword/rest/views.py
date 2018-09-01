@@ -16,8 +16,8 @@ from rest_framework.views import APIView
 from nopassword.rest import serializers
 
 
-class LoginCodeRequestView(GenericAPIView):
-    serializer_class = serializers.LoginCodeRequestSerializer
+class LoginView(GenericAPIView):
+    serializer_class = serializers.LoginSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
@@ -32,9 +32,9 @@ class LoginCodeRequestView(GenericAPIView):
 
 
 @method_decorator(sensitive_post_parameters('code'), 'dispatch')
-class LoginView(GenericAPIView):
+class LoginCodeView(GenericAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = serializers.LoginSerializer
+    serializer_class = serializers.LoginCodeSerializer
     token_serializer_class = serializers.TokenSerializer
     token_model = Token
 

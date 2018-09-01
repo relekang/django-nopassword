@@ -12,7 +12,7 @@ class TestRestViews(TestCase):
         self.user = get_user_model().objects.create(username='user')
 
     def test_request_login_code(self):
-        response = self.client.post('/accounts-rest/login-code/request/', {
+        response = self.client.post('/accounts-rest/login/', {
             'username': self.user.username,
         })
 
@@ -23,7 +23,7 @@ class TestRestViews(TestCase):
         self.assertIsNotNone(login_code)
 
     def test_request_login_code_missing_username(self):
-        response = self.client.post('/accounts-rest/login-code/request/')
+        response = self.client.post('/accounts-rest/login/')
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
@@ -31,7 +31,7 @@ class TestRestViews(TestCase):
         })
 
     def test_request_login_code_unknown_user(self):
-        response = self.client.post('/accounts-rest/login-code/request/', {
+        response = self.client.post('/accounts-rest/login/', {
             'username': 'unknown',
         })
 
@@ -44,7 +44,7 @@ class TestRestViews(TestCase):
         self.user.is_active = False
         self.user.save()
 
-        response = self.client.post('/accounts-rest/login-code/request/', {
+        response = self.client.post('/accounts-rest/login/', {
             'username': self.user.username,
         })
 
@@ -56,7 +56,7 @@ class TestRestViews(TestCase):
     def test_login(self):
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.post('/accounts-rest/login/', {
+        response = self.client.post('/accounts-rest/login/code/', {
             'code': login_code.code,
         })
 
@@ -69,7 +69,7 @@ class TestRestViews(TestCase):
         self.assertEqual(response.data['key'], token.key)
 
     def test_login_missing_code(self):
-        response = self.client.post('/accounts-rest/login/')
+        response = self.client.post('/accounts-rest/login/code/')
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
@@ -77,7 +77,7 @@ class TestRestViews(TestCase):
         })
 
     def test_login_unknown_code(self):
-        response = self.client.post('/accounts-rest/login/', {
+        response = self.client.post('/accounts-rest/login/code/', {
             'code': 'unknown',
         })
 
@@ -92,7 +92,7 @@ class TestRestViews(TestCase):
 
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.post('/accounts-rest/login/', {
+        response = self.client.post('/accounts-rest/login/code/', {
             'code': login_code.code,
         })
 

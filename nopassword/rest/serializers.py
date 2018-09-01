@@ -5,10 +5,10 @@ from rest_framework.authtoken.models import Token
 from nopassword import forms
 
 
-class LoginCodeRequestSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
 
-    form_class = forms.LoginCodeRequestForm
+    form_class = forms.LoginForm
 
     def validate(self, data):
         self.form = self.form_class(data=self.initial_data)
@@ -23,10 +23,10 @@ class LoginCodeRequestSerializer(serializers.Serializer):
         self.form.save(request=request)
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginCodeSerializer(serializers.Serializer):
     code = serializers.CharField()
 
-    form_class = forms.LoginForm
+    form_class = forms.LoginCodeForm
 
     def validate(self, data):
         request = self.context.get('request')

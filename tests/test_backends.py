@@ -63,7 +63,7 @@ class EmailBackendTests(TestCase):
 
     def test_html_template_name(self):
         # We don't have an existing html template, so we just use the txt template
-        self.backend.html_template_name = 'registration/login_code_request_email.txt'
+        self.backend.html_template_name = 'registration/login_email.txt'
         self.backend.send_login_code(self.code, {'url': 'https://example.com'})
         self.assertEqual(1, len(mail.outbox))
         message = mail.outbox[0]

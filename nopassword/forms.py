@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.conf import settings
 from django.contrib.auth import authenticate, get_backends, get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ImproperlyConfigured
@@ -10,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from nopassword import models
 
 
-class LoginCodeRequestForm(forms.Form):
+class LoginForm(forms.Form):
     error_messages = {
         'invalid_username': _(
             "Please enter a correct %(username)s. "
@@ -20,7 +19,7 @@ class LoginCodeRequestForm(forms.Form):
     }
 
     def __init__(self, *args, **kwargs):
-        super(LoginCodeRequestForm, self).__init__(*args, **kwargs)
+        super(LoginForm, self).__init__(*args, **kwargs)
 
         self.username_field = get_user_model()._meta.get_field(get_user_model().USERNAME_FIELD)
         self.fields['username'] = self.username_field.formfield()
@@ -47,7 +46,7 @@ class LoginCodeRequestForm(forms.Form):
 
         return username
 
-    def save(self, request, login_url=None, domain_override=None, extra_context=None):
+    def save(self, request, login_code_url='login_code', domain_override=None, extra_context=None):
         login_code = self.cleaned_data['login_code']
         login_code.next = request.GET.get('next')
         login_code.save()
@@ -62,7 +61,7 @@ class LoginCodeRequestForm(forms.Form):
         url = '{}://{}{}?code={}&next={}'.format(
             'https' if request.is_secure() else 'http',
             domain,
-            resolve_url(login_url or settings.LOGIN_URL),
+            resolve_url(login_code_url),
             login_code.code,
             login_code.next,
         )
@@ -91,7 +90,7 @@ class LoginCodeRequestForm(forms.Form):
             )
 
 
-class LoginForm(forms.Form):
+class LoginCodeForm(forms.Form):
     code = forms.ModelChoiceField(
         label=_('Login code'),
         queryset=models.LoginCode.objects.select_related('user'),
@@ -107,7 +106,7 @@ class LoginForm(forms.Form):
     }
 
     def __init__(self, request=None, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
+        super(LoginCodeForm, self).__init__(*args, **kwargs)
 
         self.request = request
 

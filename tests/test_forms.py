@@ -7,7 +7,7 @@ from mock import MagicMock
 from nopassword import forms
 
 
-class TestLoginCodeRequestForm(TestCase):
+class TestLoginForm(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -17,7 +17,7 @@ class TestLoginCodeRequestForm(TestCase):
         request = self.factory.post('/accounts/login/', {
             'username': 'user',
         })
-        form = forms.LoginCodeRequestForm(data=request.POST)
+        form = forms.LoginForm(data=request.POST)
         form.send_login_code = MagicMock()
 
         self.assertTrue(form.is_valid())
@@ -32,7 +32,7 @@ class TestLoginCodeRequestForm(TestCase):
         request = self.factory.post('/accounts/login/', {
             'username': 'user',
         })
-        form = forms.LoginCodeRequestForm(data=request.POST)
+        form = forms.LoginForm(data=request.POST)
         form.send_login_code = MagicMock()
 
         self.assertTrue(form.is_valid())
@@ -48,5 +48,5 @@ class TestLoginCodeRequestForm(TestCase):
         AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'],
     )
     def test_missing_backend(self):
-        form = forms.LoginCodeRequestForm()
+        form = forms.LoginForm()
         self.assertRaises(ImproperlyConfigured, form.send_login_code, None, None)

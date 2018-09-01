@@ -11,19 +11,19 @@ class TestViews(TestCase):
         self.user = get_user_model().objects.create(username='user')
 
     def test_request_login_code(self):
-        response = self.client.post('/accounts/login-code/request/', {
+        response = self.client.post('/accounts/login/', {
             'username': self.user.username,
         })
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], '/accounts/login/')
+        self.assertEqual(response['Location'], '/accounts/login/code/')
 
         login_code = LoginCode.objects.filter(user=self.user).first()
 
         self.assertIsNotNone(login_code)
 
     def test_request_login_code_missing_username(self):
-        response = self.client.post('/accounts/login-code/request/')
+        response = self.client.post('/accounts/login/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].errors, {
@@ -31,7 +31,7 @@ class TestViews(TestCase):
         })
 
     def test_request_login_code_unknown_user(self):
-        response = self.client.post('/accounts/login-code/request/', {
+        response = self.client.post('/accounts/login/', {
             'username': 'unknown',
         })
 
@@ -44,7 +44,7 @@ class TestViews(TestCase):
         self.user.is_active = False
         self.user.save()
 
-        response = self.client.post('/accounts/login-code/request/', {
+        response = self.client.post('/accounts/login/', {
             'username': self.user.username,
         })
 
@@ -56,7 +56,7 @@ class TestViews(TestCase):
     def test_login_post(self):
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.post('/accounts/login/', {
+        response = self.client.post('/accounts/login/code/', {
             'code': login_code.code,
         })
 
@@ -68,7 +68,7 @@ class TestViews(TestCase):
     def test_login_get(self):
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.get('/accounts/login/', {
+        response = self.client.get('/accounts/login/code/', {
             'code': login_code.code,
         })
 
@@ -81,7 +81,7 @@ class TestViews(TestCase):
     def test_login_get_non_idempotent(self):
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.get('/accounts/login/', {
+        response = self.client.get('/accounts/login/code/', {
             'code': login_code.code,
         })
 
@@ -91,7 +91,7 @@ class TestViews(TestCase):
         self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 
     def test_login_missing_code_post(self):
-        response = self.client.post('/accounts/login/')
+        response = self.client.post('/accounts/login/code/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].errors, {
@@ -99,13 +99,13 @@ class TestViews(TestCase):
         })
 
     def test_login_missing_code_get(self):
-        response = self.client.get('/accounts/login/')
+        response = self.client.get('/accounts/login/code/')
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['form'].is_bound)
 
     def test_login_unknown_code(self):
-        response = self.client.post('/accounts/login/', {
+        response = self.client.post('/accounts/login/code/', {
             'code': 'unknown',
         })
 
@@ -120,7 +120,7 @@ class TestViews(TestCase):
 
         login_code = LoginCode.objects.create(user=self.user, code='foobar')
 
-        response = self.client.post('/accounts/login/', {
+        response = self.client.post('/accounts/login/code/', {
             'code': login_code.code,
         })
 

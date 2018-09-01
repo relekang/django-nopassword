@@ -7,7 +7,7 @@ from nopassword.backends.base import NoPasswordBackend
 
 
 class TwilioBackend(NoPasswordBackend):
-    template_name = 'registration/login_code_request_sms.txt'
+    template_name = 'registration/login_sms.txt'
     from_number = None
 
     def __init__(self):

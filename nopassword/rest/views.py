@@ -49,11 +49,13 @@ class LoginCodeView(GenericAPIView):
             self.process_login()
 
     def get_response(self):
-        serializer = self.token_serializer_class(
+        token_serializer = self.token_serializer_class(
             instance=self.token,
             context=self.get_serializer_context(),
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = token_serializer.data
+        data['next'] = self.serializer.validated_data['code'].next
+        return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)

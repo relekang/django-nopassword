@@ -24,6 +24,11 @@ class LoginView(FormView):
     def dispatch(self, request, *args, **kwargs):
         return super(LoginView, self).dispatch(request, *args, **kwargs)
 
+    def get_form_kwargs(self):
+        kwargs = super(LoginView, self).get_form_kwargs()
+        kwargs['initial'] = {'next': self.request.GET.get('next')}
+        return kwargs
+
     def form_valid(self, form):
         form.save(request=self.request)
         return super(LoginView, self).form_valid(form)

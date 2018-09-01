@@ -18,6 +18,8 @@ class LoginForm(forms.Form):
         'inactive': _("This account is inactive."),
     }
 
+    next = forms.CharField(max_length=200, required=False, widget=forms.HiddenInput)
+
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
 
@@ -42,14 +44,15 @@ class LoginForm(forms.Form):
                 code='inactive',
             )
 
-        self.cleaned_data['login_code'] = models.LoginCode.create_code_for_user(user)
+        self.cleaned_data['user'] = user
 
         return username
 
     def save(self, request, login_code_url='login_code', domain_override=None, extra_context=None):
-        login_code = self.cleaned_data['login_code']
-        login_code.next = request.GET.get('next')
-        login_code.save()
+        login_code = models.LoginCode.create_code_for_user(
+            user=self.cleaned_data['user'],
+            next=self.cleaned_data['next'],
+        )
 
         if not domain_override:
             current_site = get_current_site(request)
@@ -58,12 +61,11 @@ class LoginForm(forms.Form):
         else:
             site_name = domain = domain_override
 
-        url = '{}://{}{}?code={}&next={}'.format(
+        url = '{}://{}{}?code={}'.format(
             'https' if request.is_secure() else 'http',
             domain,
             resolve_url(login_code_url),
             login_code.code,
-            login_code.next,
         )
 
         context = {
@@ -77,6 +79,8 @@ class LoginForm(forms.Form):
             context.update(extra_context)
 
         self.send_login_code(login_code, context)
+
+        return login_code
 
     def send_login_code(self, login_code, context, **kwargs):
         for backend in get_backends():

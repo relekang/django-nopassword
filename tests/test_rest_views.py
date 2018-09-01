@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase
 from rest_framework.authtoken.models import Token
 
@@ -9,11 +10,12 @@ from nopassword.models import LoginCode
 class TestRestViews(TestCase):
 
     def setUp(self):
-        self.user = get_user_model().objects.create(username='user')
+        self.user = get_user_model().objects.create(username='user', email='foo@bar.com')
 
     def test_request_login_code(self):
         response = self.client.post('/accounts-rest/login/', {
             'username': self.user.username,
+            'next': '/private/',
         })
 
         self.assertEqual(response.status_code, 200)
@@ -21,6 +23,12 @@ class TestRestViews(TestCase):
         login_code = LoginCode.objects.filter(user=self.user).first()
 
         self.assertIsNotNone(login_code)
+        self.assertEqual(login_code.next, '/private/')
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(
+            'http://testserver/accounts/login/code/?code={}'.format(login_code.code),
+            mail.outbox[0].body,
+        )
 
     def test_request_login_code_missing_username(self):
         response = self.client.post('/accounts-rest/login/')
@@ -54,7 +62,7 @@ class TestRestViews(TestCase):
         })
 
     def test_login(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
 
         response = self.client.post('/accounts-rest/login/code/', {
             'code': login_code.code,
@@ -66,7 +74,10 @@ class TestRestViews(TestCase):
         token = Token.objects.filter(user=self.user).first()
 
         self.assertIsNotNone(token)
-        self.assertEqual(response.data['key'], token.key)
+        self.assertEqual(response.data, {
+            'key': token.key,
+            'next': '/private/',
+        })
 
     def test_login_missing_code(self):
         response = self.client.post('/accounts-rest/login/code/')

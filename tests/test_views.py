@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase, override_settings
 
 from nopassword.models import LoginCode
@@ -8,11 +9,12 @@ from nopassword.models import LoginCode
 class TestViews(TestCase):
 
     def setUp(self):
-        self.user = get_user_model().objects.create(username='user')
+        self.user = get_user_model().objects.create(username='user', email='foo@bar.com')
 
     def test_request_login_code(self):
         response = self.client.post('/accounts/login/', {
             'username': self.user.username,
+            'next': '/private/',
         })
 
         self.assertEqual(response.status_code, 302)
@@ -21,6 +23,12 @@ class TestViews(TestCase):
         login_code = LoginCode.objects.filter(user=self.user).first()
 
         self.assertIsNotNone(login_code)
+        self.assertEqual(login_code.next, '/private/')
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(
+            'http://testserver/accounts/login/code/?code={}'.format(login_code.code),
+            mail.outbox[0].body,
+        )
 
     def test_request_login_code_missing_username(self):
         response = self.client.post('/accounts/login/')
@@ -54,14 +62,14 @@ class TestViews(TestCase):
         })
 
     def test_login_post(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
 
         response = self.client.post('/accounts/login/code/', {
             'code': login_code.code,
         })
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], '/accounts/profile/')
+        self.assertEqual(response['Location'], '/private/')
         self.assertEqual(response.wsgi_request.user, self.user)
         self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 
@@ -79,14 +87,14 @@ class TestViews(TestCase):
 
     @override_settings(NOPASSWORD_LOGIN_ON_GET=True)
     def test_login_get_non_idempotent(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
 
         response = self.client.get('/accounts/login/code/', {
             'code': login_code.code,
         })
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], '/accounts/profile/')
+        self.assertEqual(response['Location'], '/private/')
         self.assertEqual(response.wsgi_request.user, self.user)
         self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 

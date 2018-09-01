@@ -7,6 +7,7 @@ from nopassword import forms
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
+    next = serializers.CharField(required=False, allow_null=True)
 
     form_class = forms.LoginForm
 
@@ -20,7 +21,7 @@ class LoginSerializer(serializers.Serializer):
 
     def save(self):
         request = self.context.get('request')
-        self.form.save(request=request)
+        return self.form.save(request=request)
 
 
 class LoginCodeSerializer(serializers.Serializer):

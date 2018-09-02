@@ -13,7 +13,8 @@ Run this command to install django-nopassword::
     pip install django-nopassword
 
 Requirements:
-Django >= 1.4 (1.5 custom user is supported)
+Django >= 1.11 (custom user is supported)
 
 .. include:: usage.rst
+.. include:: rest.rst
 .. include:: settings.rst

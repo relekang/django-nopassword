@@ -12,36 +12,17 @@ django-nopassword settings
 
     Defines how long a login code is valid in seconds.
 
-.. attribute:: NOPASSWORD_NAMESPACE
-
-    Default: ``'nopassword'``
-
-    Defines the namespace for the urls, this must match the namespace of the include of
-    nopassword.urls.
-
-.. attribute:: NOPASSWORD_HIDE_USERNAME
-
-    Default: ``False``
-
-    If set to True, the login url will not contain the username.
-
-.. attribute:: NOPASSWORD_LOGIN_EMAIL_SUBJECT
-
-    Default: ``_('Login code')``
-
-    Sets Email Subject for Login Emails.
-
 .. attribute:: NOPASSWORD_HASH_ALGORITHM
 
     Default: ``'sha256'``
 
     Set the algorithm for used in logincode generation. Possible values are those who are supported in hashlib. The value should be set as the name of the attribute in hashlib. Example `hashlib.sha256()` would be `NOPASSWORD_HASH_ALGORITHM = 'sha256'.
 
-.. attribute:: NOPASSWORD_POST_REDIRECT
+.. attribute:: NOPASSWORD_LOGIN_ON_GET
 
-    Default: ``True``
+    Default: ``False``
 
-    By default, the login code url requires a POST request to authenticate the user. A GET request renders ``registration/login_submit.html``, which contains some Javascript that automatically performs the POST on page load. To authenticate directly inside the initial GET request instead, set this to ``False``.
+    By default, the login code url requires a POST request to authenticate the user. A GET request renders a form that must be submitted by the user to perform authentication. To authenticate directly inside the initial GET request instead, set this to ``True``.
 
 .. attribute:: NOPASSWORD_CODE_LENGTH
 
@@ -65,15 +46,6 @@ django-nopassword settings
 
 Django settings used in django-nopassword
 +++++++++++++++++++++++++++++++++++++++++
-
-.. attribute:: SERVER_URL
-
-    Default: ``'example.com'``
-
-    By default, ``nopassword.views.login`` passes the result of ``result.get_host()`` to
-    ``LoginCode.send_login_code`` to build the login URL. If you write your own view
-    and/or want to avoid this behavior by not passing a value for host, the
-    ``SERVER_URL`` setting will be used instead.
 
 .. attribute:: DEFAULT_FROM_EMAIL
 

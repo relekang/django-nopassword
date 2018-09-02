@@ -6,21 +6,21 @@ Add the app to installed apps::
         'nopassword',
     )
 
-Set the authentication backend to *EmailBackend*::
+Add the authentication backend *EmailBackend*::
 
-    AUTHENTICATION_BACKENDS = ( 'nopassword.backends.email.EmailBackend', )
+    AUTHENTICATION_BACKENDS = (
+        # Needed to login by username in Django admin, regardless of `nopassword`
+        'django.contrib.auth.backends.ModelBackend',
+
+        # Send login codes via email
+        'nopassword.backends.email.EmailBackend',
+    )
 
 Add urls to your *urls.py*::
 
     urlpatterns = patterns('',
         url(r'^accounts/', include('nopassword.urls')),
     )
-
-Verify users
-~~~~~~~~~~~~
-If it is necessary to verify that users still are active in another system. Override
-*verify_user(user)* to implement your check. In *NoPasswordBackend* that method checks
-whether the user is active in the django app.
 
 Backends
 ++++++++
@@ -30,33 +30,36 @@ There are several predefined backends. Usage of those backends are listed below.
 
 .. class:: EmailBackend
 Delivers the code by email. It uses the django send email functionality to send
-the emails. It will attach both HTML and plain-text versions of the email.
+the emails.
+
+Override the following templates to customize emails:
+
+- ``registration/login_email.txt`` - Plain text message
+- ``registration/login_email.html`` - HTML message (note that no default html message is attached)
+- ``registration/login_subject.txt`` - Subject
 
 .. currentmodule:: nopassword.backends.sms
 
 .. class:: TwilioBackend
 Delivers the code by sms sent through the twilio service.
 
+Override the following template to customize messages:
+
+- ``registration/login_sms.txt`` - SMS message
+
 
 Custom backends
 ~~~~~~~~~~~~~~~
 In backends.py there is a *NoPasswordBackend*, from which it is possible
 to build custom backends. The *EmailBackend* described above inherits from
-this backend. Creating your own backend is can be done by creating a subclass
-of *NoPasswordBackend* and implementing *send_login_code*. A good example is
-the *EmailBackend*::
+this backend. Creating your own backend can be done by creating a subclass
+of *NoPasswordBackend* and implementing *send_login_code*.::
 
-    class EmailBackend(NoPasswordBackend):
-
-        def send_login_code(self, code, secure=False, host=None):
-            subject = getattr(settings, 'NOPASSWORD_LOGIN_EMAIL_SUBJECT', _('Login code'))
-            to_email = [code.user.email]
-            from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'root@example.com')
-
-            context = {'url': code.login_url(secure=secure, host=host), 'code': code}
-            text_content = render_to_string('registration/login_email.txt', context)
-            html_content = render_to_string('registration/login_email.html', context)
-
-            msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-            msg.attach_alternative(html_content, 'text/html')
-            msg.send()
+    class CustomBackend(NoPasswordBackend):
+    
+        def send_login_code(self, code, context, **kwargs):
+            """
+            Use code.user to get contact information
+            Use context to render a custom template
+            Use kwargs in case you have a custom view that provides additional configuration
+            """

@@ -18,3 +18,4 @@ Django >= 1.11 (custom user is supported)
 .. include:: usage.rst
 .. include:: rest.rst
 .. include:: settings.rst
+.. include:: changelog.rst

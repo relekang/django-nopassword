@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.utils import timezone
 
 from nopassword.models import LoginCode
 
@@ -24,7 +25,7 @@ class NoPasswordBackend(ModelBackend):
                 return
 
             timeout = getattr(settings, 'NOPASSWORD_LOGIN_CODE_TIMEOUT', 900)
-            timestamp = datetime.now() - timedelta(seconds=timeout)
+            timestamp = timezone.now() - timedelta(seconds=timeout)
 
             # We don't delete the login code when authenticating,
             # as that is done during validation of the login form

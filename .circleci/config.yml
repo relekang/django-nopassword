@@ -50,9 +50,10 @@ jobs:
          key: v1-tox-{{ checksum "tox.ini" }}-{{ checksum "requirements.txt" }}
          paths:
            - .tox
-      - run: tox -e py3-django1_8
-      - run: tox -e py3-django1_9
-      - run: tox -e py3-django1_10
+      - run: tox -e py2-django1_11
+      - run: tox -e py3-django1_11
+      - run: tox -e py3-django2_0
+      - run: tox -e py3-django2_1
       - run: tox -e coverage
 
 workflows:

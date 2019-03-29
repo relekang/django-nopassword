@@ -6,6 +6,8 @@
 Welcome to django_nopassword's documentation!
 =============================================
 
+Authentication backend for django that uses a one time code instead of passwords.
+
 Installation
 ------------
 Run this command to install django-nopassword::

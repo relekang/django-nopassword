@@ -1,6 +1,8 @@
 # django-nopassword
 [![CircleCI](https://circleci.com/gh/relekang/django-nopassword.svg?style=svg)](https://circleci.com/gh/relekang/django-nopassword)
 
+_Authentication backend for django that uses a one time code instead of passwords._
+
 This project was originally inspired by [Is it time for password-less login?](http://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login) by [Ben Brown](http://twitter.com/benbrown)
 
 ## Installation

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+4.0.1
+-----
+
+Set the default length of codes to 64. The setting ``NOPASSWORD_CODE_LENGTH`` is considered
+deprecated.
+
 4.0.0
 -----
 

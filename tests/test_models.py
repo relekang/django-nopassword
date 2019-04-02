@@ -17,7 +17,7 @@ class TestLoginCodes(TestCase):
         self.code = LoginCode.create_code_for_user(self.user)
 
     def test_login_backend(self):
-        self.assertEqual(len(self.code.code), 20)
+        self.assertEqual(len(self.code.code), 64)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
         self.assertIsNone(LoginCode.create_code_for_user(self.inactive_user))
 
@@ -29,7 +29,7 @@ class TestLoginCodes(TestCase):
     @override_settings(NOPASSWORD_NUMERIC_CODES=True)
     def test_numeric_code(self):
         code = LoginCode.create_code_for_user(self.user)
-        self.assertEqual(len(code.code), 20)
+        self.assertEqual(len(code.code), 64)
         self.assertTrue(code.code.isdigit())
 
     def test_next_value(self):

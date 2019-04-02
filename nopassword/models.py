@@ -31,7 +31,7 @@ class LoginCode(models.Model):
         if not user.is_active:
             return None
 
-        code = cls.generate_code(length=getattr(settings, 'NOPASSWORD_CODE_LENGTH', 20))
+        code = cls.generate_code(length=getattr(settings, 'NOPASSWORD_CODE_LENGTH', 64))
         login_code = LoginCode(user=user, code=code)
         if next is not None:
             login_code.next = next
@@ -39,7 +39,7 @@ class LoginCode(models.Model):
         return login_code
 
     @classmethod
-    def generate_code(cls, length=20):
+    def generate_code(cls, length=64):
         hash_algorithm = getattr(settings, 'NOPASSWORD_HASH_ALGORITHM', 'sha256')
         m = getattr(hashlib, hash_algorithm)()
         m.update(getattr(settings, 'SECRET_KEY', None).encode('utf-8'))

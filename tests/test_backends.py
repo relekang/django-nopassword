@@ -28,7 +28,7 @@ class TwilioBackendTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='twilio_user')
         self.code = LoginCode.create_code_for_user(self.user, next='/secrets/')
-        self.assertEqual(len(self.code.code), 20)
+        self.assertEqual(len(self.code.code), 64)
         self.assertIsNotNone(authenticate(username=self.user.username, code=self.code.code))
 
     @patch('nopassword.backends.sms.TwilioRestClient')

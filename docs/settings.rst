@@ -26,7 +26,7 @@ django-nopassword settings
 
 .. attribute:: NOPASSWORD_CODE_LENGTH
 
-    Default: ``20``
+    Default: ``64``
 
     The length of the code used to log people in.
 

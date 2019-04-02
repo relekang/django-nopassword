@@ -1,6 +1,13 @@
 Changelog
 =========
 
+5.0.0
+-----
+
+Breaking changes:
+
+- Removed custom length of login codes
+
 4.0.1
 -----
 

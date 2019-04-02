@@ -24,12 +24,6 @@ django-nopassword settings
 
     By default, the login code url requires a POST request to authenticate the user. A GET request renders a form that must be submitted by the user to perform authentication. To authenticate directly inside the initial GET request instead, set this to ``True``.
 
-.. attribute:: NOPASSWORD_CODE_LENGTH
-
-    Default: ``64``
-
-    The length of the code used to log people in.
-
 .. attribute:: NOPASSWORD_TWILIO_SID
 
     Account ID for Twilio.

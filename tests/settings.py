@@ -1,13 +1,14 @@
 # -*- coding: utf8 -*-
+import os
 
 import django
 
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'NAME': os.environ.get('DB_NAME', ':memory:'),
     }
 }
 
@@ -20,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.messages',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -49,6 +51,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -67,7 +70,7 @@ if django.VERSION < (1, 10):
 
 ROOT_URLCONF = 'tests.urls'
 
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

@@ -7,6 +7,9 @@ Changelog
 Breaking changes:
 
 - Removed custom length of login codes
+- Do not store the code in the database. Hash and compare on login instead. This might have an performance impact.
+- Add user id to the login code form and urls sent to the user.
+- Changing the secret key will now invalidate all login codes.
 
 4.0.1
 -----

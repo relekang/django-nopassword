@@ -26,7 +26,10 @@ class TestRestViews(TestCase):
         self.assertEqual(login_code.next, '/private/')
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(
-            'http://testserver/accounts/login/code/?code={}'.format(login_code.code),
+            'http://testserver/accounts/login/code/?user={}&code={}'.format(
+                login_code.user.pk,
+                login_code.code
+            ),
             mail.outbox[0].body,
         )
 
@@ -62,9 +65,10 @@ class TestRestViews(TestCase):
         })
 
     def test_login(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
+        login_code = LoginCode.objects.create(user=self.user, next='/private/')
 
         response = self.client.post('/accounts-rest/login/code/', {
+            'user': login_code.user.pk,
             'code': login_code.code,
         })
 
@@ -94,14 +98,15 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'code': ['Login code is invalid. It might have expired.'],
+            '__all__': ['Unable to log in with provided login code.'],
+            'user': ['This field is required.']
         })
 
     def test_login_inactive_user(self):
         self.user.is_active = False
         self.user.save()
 
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         response = self.client.post('/accounts-rest/login/code/', {
             'code': login_code.code,
@@ -109,7 +114,8 @@ class TestRestViews(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {
-            'code': ['Unable to log in with provided login code.'],
+            '__all__': ['Unable to log in with provided login code.'],
+            'user': ['This field is required.']
         })
 
     def test_logout(self):
@@ -124,7 +130,7 @@ class TestRestViews(TestCase):
         self.assertFalse(Token.objects.filter(user=self.user).exists())
 
     def test_logout_unknown_token(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         self.client.login(username=self.user.username, code=login_code.code)
 

@@ -26,7 +26,10 @@ class TestViews(TestCase):
         self.assertEqual(login_code.next, '/private/')
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(
-            'http://testserver/accounts/login/code/?code={}'.format(login_code.code),
+            'http://testserver/accounts/login/code/?user={}&code={}'.format(
+                login_code.user.pk,
+                login_code.code
+            ),
             mail.outbox[0].body,
         )
 
@@ -62,9 +65,10 @@ class TestViews(TestCase):
         })
 
     def test_login_post(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
+        login_code = LoginCode.objects.create(user=self.user, next='/private/')
 
         response = self.client.post('/accounts/login/code/', {
+            'user': login_code.user.pk,
             'code': login_code.code,
         })
 
@@ -74,22 +78,24 @@ class TestViews(TestCase):
         self.assertFalse(LoginCode.objects.filter(pk=login_code.pk).exists())
 
     def test_login_get(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         response = self.client.get('/accounts/login/code/', {
+            'user': login_code.user.pk,
             'code': login_code.code,
         })
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['form'].cleaned_data['code'], login_code)
+        self.assertEqual(response.context['form'].cleaned_data['code'], login_code.code)
         self.assertTrue(response.wsgi_request.user.is_anonymous)
         self.assertTrue(LoginCode.objects.filter(pk=login_code.pk).exists())
 
     @override_settings(NOPASSWORD_LOGIN_ON_GET=True)
     def test_login_get_non_idempotent(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar', next='/private/')
+        login_code = LoginCode.objects.create(user=self.user, next='/private/')
 
         response = self.client.get('/accounts/login/code/', {
+            'user': login_code.user.pk,
             'code': login_code.code,
         })
 
@@ -103,7 +109,9 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].errors, {
+            'user': ['This field is required.'],
             'code': ['This field is required.'],
+            '__all__': ['Unable to log in with provided login code.']
         })
 
     def test_login_missing_code_get(self):
@@ -114,31 +122,33 @@ class TestViews(TestCase):
 
     def test_login_unknown_code(self):
         response = self.client.post('/accounts/login/code/', {
+            'user': 1,
             'code': 'unknown',
         })
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].errors, {
-            'code': ['Login code is invalid. It might have expired.'],
+            '__all__': ['Unable to log in with provided login code.'],
         })
 
     def test_login_inactive_user(self):
         self.user.is_active = False
         self.user.save()
 
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         response = self.client.post('/accounts/login/code/', {
+            'user': login_code.user.pk,
             'code': login_code.code,
         })
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].errors, {
-            'code': ['Unable to log in with provided login code.'],
+            '__all__': ['Unable to log in with provided login code.']
         })
 
     def test_logout_post(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         self.client.login(username=self.user.username, code=login_code.code)
 
@@ -149,7 +159,7 @@ class TestViews(TestCase):
         self.assertTrue(response.wsgi_request.user.is_anonymous)
 
     def test_logout_get(self):
-        login_code = LoginCode.objects.create(user=self.user, code='foobar')
+        login_code = LoginCode.objects.create(user=self.user)
 
         self.client.login(username=self.user.username, code=login_code.code)
 

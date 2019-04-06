@@ -31,10 +31,13 @@ class NoPasswordBackend(ModelBackend):
             # as that is done during validation of the login form
             # and validation should not have any side effects.
             # It is the responsibility of the view/form to delete the token
-            # as soon as the login was successfull.
-            user.login_code = LoginCode.objects.get(user=user, code=code, timestamp__gt=timestamp)
+            # as soon as the login was successful.
 
-            return user
+            for c in LoginCode.objects.filter(user=user, timestamp__gt=timestamp):
+                if c.code == code:
+                    user.login_code = c
+                    return user
+            return
 
         except (get_user_model().DoesNotExist, LoginCode.DoesNotExist):
             return

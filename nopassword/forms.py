@@ -61,10 +61,11 @@ class LoginForm(forms.Form):
         else:
             site_name = domain = domain_override
 
-        url = '{}://{}{}?code={}'.format(
+        url = '{}://{}{}?user={}&code={}'.format(
             'https' if request.is_secure() else 'http',
             domain,
             resolve_url(login_code_url),
+            login_code.user.pk,
             login_code.code,
         )
 
@@ -95,11 +96,9 @@ class LoginForm(forms.Form):
 
 
 class LoginCodeForm(forms.Form):
-    code = forms.ModelChoiceField(
+    user = forms.CharField()
+    code = forms.CharField(
         label=_('Login code'),
-        queryset=models.LoginCode.objects.select_related('user'),
-        to_field_name='code',
-        widget=forms.TextInput,
         error_messages={
             'invalid_choice': _('Login code is invalid. It might have expired.'),
         },
@@ -114,12 +113,19 @@ class LoginCodeForm(forms.Form):
 
         self.request = request
 
-    def clean_code(self):
+    def clean(self):
+        user_id = self.cleaned_data.get('user', None)
+        if user_id is None:
+            raise forms.ValidationError(
+                self.error_messages['invalid_code'],
+                code='invalid_code',
+            )
+
+        user = get_user_model().objects.get(pk=user_id)
         code = self.cleaned_data['code']
-        username = code.user.get_username()
         user = authenticate(self.request, **{
-            get_user_model().USERNAME_FIELD: username,
-            'code': code.code,
+            get_user_model().USERNAME_FIELD: user.username,
+            'code': code,
         })
 
         if not user:
@@ -130,10 +136,11 @@ class LoginCodeForm(forms.Form):
 
         self.cleaned_data['user'] = user
 
-        return code
+        return self.cleaned_data
 
     def get_user(self):
         return self.cleaned_data.get('user')
 
     def save(self):
-        self.cleaned_data['code'].delete()
+        if self.get_user().login_code:
+            self.get_user().login_code.delete()

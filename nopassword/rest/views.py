@@ -54,7 +54,7 @@ class LoginCodeView(GenericAPIView):
             context=self.get_serializer_context(),
         )
         data = token_serializer.data
-        data['next'] = self.serializer.validated_data['code'].next
+        data['next'] = self.serializer.validated_data['user'].login_code.next
         return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):

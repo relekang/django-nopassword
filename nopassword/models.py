@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 class LoginCode(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='login_codes',
                              editable=False, verbose_name=_('user'), on_delete=models.CASCADE)
-    code = models.CharField(max_length=20, editable=False, verbose_name=_('code'))
+    code = models.CharField(max_length=64, editable=False, verbose_name=_('code'))
     timestamp = models.DateTimeField(editable=False)
     next = models.TextField(editable=False, blank=True)
 
